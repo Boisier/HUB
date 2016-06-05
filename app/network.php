@@ -95,7 +95,7 @@ else
                 require_once "NETWORKS/MTL/master.php";
                 
                 //Instantiate the printer
-                $classPath = $netNameSpacePath.'printer';
+                $classPath = $netNameSpacePath.'Printer';
                 $printer = new $classPath($netFolder, $netFolderUp);
                 
                 //Print the background
