@@ -1,0 +1,4 @@
+Options +FollowSymlinks
+RewriteEngine On
+
+RewriteRule ^network/([a-zA-Z]+)$ network.php?netTag=$1 [L]

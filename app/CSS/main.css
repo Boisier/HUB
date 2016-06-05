@@ -1,0 +1,151 @@
+html
+{
+    width: 100%;
+    height:100%;
+}
+
+body
+{
+    width: 100%;
+    height:100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
+
+
+#topPart
+{
+    height: 100%;
+    width: 100%;
+    min-height: 950px;
+    min-width: 1450px;
+}
+
+#topPart:after
+{
+    content: "";
+    clear: both;
+    display: block;
+}
+
+#route
+{
+    float: left;
+    width: calc(100% - 981px);
+    height: 100%;
+    border-right: 1px solid #373636;
+}
+
+#route header
+{
+    height: 140px;
+    padding: 20px;
+    
+    border-bottom: 3px solid #373636;
+}
+
+#route header #networkIcon
+{
+    display: inline-block;
+    vertical-align: middle;
+    width: 100px;
+    height: 100px;
+}
+
+#route header #mainTitle
+{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 15px;
+    
+    font-size: 80px;
+    line-height: 80px;
+    color: #FFF;
+}
+
+
+#mapContainer
+{
+    width: 1000px;
+    height: 100%;
+    float: left;
+    margin-left: -20px;
+    
+    overflow: hidden;
+}
+
+#mainMap
+{
+    
+}
+
+
+
+
+
+.vcenter
+{
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+#routeInfos
+{
+    padding: 20px;
+    
+    color: #FFF;
+}
+
+.stationBlock
+{
+    background-color: #373636;
+    padding: 10px;
+}
+
+.stationBlock h5
+{
+    margin-top: 0;
+}
+
+.stationBlock h2
+{
+    margin-top: -10px;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.arrowRoute
+{
+    color: #373636;
+    text-align: center;
+    font-size: 18pt;
+    padding-top: 4px;
+}
+
+.timeEstimation
+{
+    text-align: center;
+    font-size: 16pt;
+}
+
+
+
+
+
+
+
+/******************************************/
+/*  Bootstrap Fixes                       */
+/******************************************/
+
+.row
+{
+    margin-right: 0;
+    margin-left: 0;
+}
