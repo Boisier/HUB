@@ -178,3 +178,13 @@ body
 {
     height: 14px;
 }
+
+.stationLabel.details
+{
+    -webkit-transform:rotate(-45deg);
+    transform:rotate(-45deg);
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+    
+    font-size: 10pt;
+}

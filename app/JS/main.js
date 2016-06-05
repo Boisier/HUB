@@ -120,16 +120,27 @@ function route(startStation, endStation, final)
 
     if(final)
     {
-        printRouteDetails(pathStations, pathTime)
+        printRouteDetails(pathStations)
     }
 }
 
-function printRouteDetails()
+function printRouteDetails(pathStations)
 {
     //Print Route
+    jqXHR = $.ajax({
+        method: "POST",
+        url: "../print.php?action=routeDetails",
+        data: {
+            path: pathStations,
+            netTag: netTag
+        }
+    }).done(function(data)
+    {
+        $("#routeLine").html(data);
     
-    $("#routeDetails").show();
-    $('html, body').animate({
-        scrollTop: $("#routeDetails").offset().top
-    }, 2000);
+        $("#routeDetails").show();
+        $('html, body').animate({
+            scrollTop: $("#routeDetails").offset().top
+        }, 1000);
+    });
 }

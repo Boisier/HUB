@@ -154,4 +154,26 @@ class GQS
         
         return $steps;
     }
+    
+    public function getLinkID($stationA, $lineA, $stationB, $lineB)
+    {
+        if(is_null($stationA) || is_null($lineA) || is_null($stationB) || is_null($lineB))
+        {
+            throw new Exception("One or more arguments are missing.", 113);
+        }
+        
+        //Get the link id
+        $stmt = $this->bdd->prepare("SELECT link_id FROM links WHERE (station_a = :sA1 AND line_a = :lA1 AND station_b = :sB1 AND line_b = :lB1) OR (station_a = :sB2 AND line_a = :lB2 AND station_b = :sA1 AND line_b = :lA2)");
+        $stmt->execute(array(":sA1" => $stationA,
+                             ":lA1" => $lineA,
+                             ":sB1" => $stationB,
+                             ":lB1" => $lineB,
+                             ":sA2" => $stationA,
+                             ":lA2" => $lineA,
+                             ":sB2" => $stationB,
+                             ":lB2" => $lineB));
+        $linkID = $stmt->fetchColumn();
+        
+        return $linkID;
+    }
 }
