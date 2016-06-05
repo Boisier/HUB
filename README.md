@@ -105,7 +105,7 @@ The GQS will throw exception if you try to use one of the network related method
 
 When a map is rendered, the script start by gathering informations about the network and storing them in two arrays, **$NETWORK** and **$LINES**.
 
-### $LINES
+### LINES
 
 **$LINES** contain informations about the lines of the network:
 
@@ -116,7 +116,7 @@ Array [lineID]
     hex *- Color of the line (#000000)*
 ```
 
-### $NETWORK
+### NETWORK
 
 **$NETWORK** contain informations about the stations and the links/vertices
 
@@ -148,4 +148,37 @@ Array []
 ---
 The **NETWORK** and **LINES** arrays are passed as argument to Printer's methods **vertice** and **station**.
 
-**DO NOT APPLY ANYY CHANGES TO THE NETWORK AND LINES ARRAYS.** They are used by the main process to make the application work.
+**DO NOT APPLY ANY CHANGES TO THE *NETWORK* AND *LINES* ARRAYS IS PASSED BY REFERENCE.** They are used by the main process to make the application work.
+
+## Drawing the map
+
+HUB use SVG to render the map. It allow the user to draw the network easily, using CSS for the design, and allowing user interactions with the element.
+
+The current system gives you a lot of freedom when drawing the map. In couterpart, because a map in HUB is interactive, the different elements must respect specific caracteristic to allow interaction.
+
+### LINKS
+
+All the drawn links must have three specific `data-` attributes:
+* `data-linkid` : The ID of the link (*linkID*)
+* `data-stationa` : the first station of the link (*from*)
+* `data-stationb` : the second station of the link (*to*)
+
+If your link is made of multiple SVG elements, just assign them all the three `data-` attributes.
+
+**Reserved CSS class** : The CSS class **selectedPath** is used by HUB to highlight the rout found. You can't use selectedPath as one of your own CSS classes, but you can style it in your *master.css*.
+
+If you want to print SVG elements related to the links, but who don't need to use **selectedPath** class, just ommit the data- attributes, without them, HUB will just ignore the elements.
+
+### Stations
+
+All the printed stations must have one specific `data-` attribute to be recognized by HUB
+* `data-stationid` : The ID of the station (*station_id*)
+
+If your station is made of multiple SVG elements, just assign them all the `data-stationid` attribute.
+The elements who form the clickable part of the station icon must have the class **.stationBtn**. HUB use it to assign the eventListeners.
+
+If you want to print SVG elements related to the links, but who don't need to use **selectedPath** class, just ommit the data- attributes, without them, HUB will just ignore the elements.
+
+## Interactions
+
+You don't need to assign `onclick` attributes to your SVG elements. HUB will link the eventListeners itself. Just be sure to use the specified `data-` attributes and CSS classes.
