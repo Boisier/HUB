@@ -124,24 +124,28 @@ Array [lineID]
 ```
 Array []
     STATIONS [station_id]
-        station_id *- ID of the station*
-        name *- name of the station*
-        cuts *- Line-breaks when displaying the name of the station on the map*
-        main_hex *- Main color of the station*
-        posx *- X-position of the station on the map*
-        posy *- Y-position of the station on the map*
-        displayPos *- Postion of the station name around the station*
+        station_id - ID of the station
+        name - name of the station
+        cuts - Line-breaks when displaying the name of the station on the map
+        main_hex - Main color of the station
+        posx - X-position of the station on the map
+        posy - Y-position of the station on the map
+        displayPos - Postion of the station name around the station
         LINES []
-            int *- ID of the line desserved by the station*
+            int - ID of the line desserved by the station
     LINKS [linkID]
-        linkID *- ID of the link*
-        from *- First station*
-        line_from *- Line of first station*
-        to *- Second station*
-        line_to *- Line of second station*
-        time *- travel time on the link*
-        STEPS [] *- All the steps of the link (used on render)
-            type *- Type of step (Sharp/Round/...)*
-            posx *- Step point X position*
-            posy *- Step point Y position*
+        linkID - ID of the link
+        from - First station
+        line_from - Line of first station
+        to - Second station
+        line_to - Line of second station
+        time - travel time on the link
+        STEPS [] - All the steps of the link (used on render)
+            type - Type of step (Sharp/Round/...)
+            posx - Step point X position
+            posy - Step point Y position
 ```
+---
+The **NETWORK** and **LINES** arrays are passed as argument to Printer's methods **vertice** and **station**.
+
+**DO NOT APPLY ANYY CHANGES TO THE NETWORK AND LINES ARRAYS.** They are used by the main process to make the application work.
