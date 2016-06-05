@@ -156,7 +156,7 @@ HUB use SVG to render the map. It allow the user to draw the network easily, usi
 
 The current system gives you a lot of freedom when drawing the map. In couterpart, because a map in HUB is interactive, the different elements must respect specific caracteristic to allow interaction.
 
-### LINKS
+### Links
 
 All the drawn links must have three specific `data-` attributes:
 * `data-linkid` : The ID of the link (*linkID*)
