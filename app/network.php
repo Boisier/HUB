@@ -68,7 +68,7 @@ else
             <section id="route">
                 <header>
                     <img src="<?php echo $netFolderUp; ?>/logo.png" class="networkIcon">  
-                    <div id="mainTitle">
+                    <div class="mainTitle">
                         <?php echo $networkName; ?>
                     </div>
                 </header>
@@ -93,7 +93,7 @@ else
                 <svg width="1000" height="1500" id="mainMap" viewBox="0 350 1000 1500">
                 <?php
                 //We insert the current Network master
-                require_once "NETWORKS/MTL/master.php";
+                require_once "NETWORKS/".$networkTAG."/master.php";
                 
                 //Instantiate the printer
                 $classPath = $netNameSpacePath.'Printer';
@@ -130,6 +130,7 @@ else
             </pre> -->
             <script type="text/javascript">
                 var NETWORK = <?php echo json_encode($NETWORK); ?>;
+                var netTag = '<?php echo $networkTAG; ?>';
                 
                 $(document).ready(initMap);                
             </script>
@@ -137,9 +138,11 @@ else
         <section id="routeDetails" style="display:none;">
             <header>
                 <img src="<?php echo $netFolderUp; ?>/logo.png" class="networkIcon"> 
-                <div class="routeName"></div>
+                <div class="mainTitle">
+                    Itinéraire
+                </div>
             </header> 
-            <section id="routeLine"></section>
+            <svg id="routeLine" width="100%" height="250"></svg>
         </section>
     </body>
 </html>
