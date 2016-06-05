@@ -21,11 +21,11 @@ Those three files *WILL* be called by HUB.
 ### master.php
 
 This file all the functions called by the main script.
-It must be in its own namespace following a specific syntax : _Networks\\**network_tag**_
+It must be in its own namespace following a specific syntax : _Networks\\**network_tag**_, otherwise you'll get an error.
 
-The **master.php** file must also contain a **Printer** class implementing different method who will be called by the main process.
+The **master.php** file must also contain a **Printer** class implementing different methods who will be called by the main process.
 
-An empty **master.php** should somthing like this :
+An empty **master.php** should look something like this :
 
 
 ``` PHP
@@ -86,7 +86,7 @@ No support yet for other extensions, must be **logo.png**.
 ## The Global Query System
 
 In order to improve security and stability, third-party networks interact with the database through the **Global Query System (GQS)** class.
-The GQS give the user the possibility to call different methods to interact with the database. A GQS query will always return an Array, with the exception of *setNetwork* and *isNetwork()* methods.
+The GQS give the user the possibility to call different methods to interact with the database. A GQS query will always return an Array, with the exception of *setNetwork()* and *isNetwork()* methods.
 
 The methods available at this time are :
 * **setNetwork(network_tag)** - Define current network to be used with future queries. Return void
@@ -98,3 +98,50 @@ The methods available at this time are :
 * **getStationSpecs()** - Return the specs of a station
 * **getLinkSteps()** - Return the drawing steps of a particular link
 * *More to come...*
+
+The GQS will throw exception if you try to use one of the network related methods without having set the current network before.
+
+## The NETWORK and LINES Arrays
+
+When a map is rendered, the script start by gathering informations about the network and storing them in two arrays, **$NETWORK** and **$LINES**.
+
+### $LINES
+
+**$LINES** contain informations about the lines of the network:
+
+```
+Array [lineID]
+    lineID *- ID of the line*
+    name *- Name of the line*
+    hex *- Color of the line (#000000)*
+```
+
+### $NETWORK
+
+**$NETWORK** contain informations about the stations and the links/vertices
+
+
+```
+Array []
+    STATIONS [station_id]
+        station_id *- ID of the station*
+        name *- name of the station*
+        cuts *- Line-breaks when displaying the name of the station on the map*
+        main_hex *- Main color of the station*
+        posx *- X-position of the station on the map*
+        posy *- Y-position of the station on the map*
+        displayPos *- Postion of the station name around the station*
+        LINES []
+            int *- ID of the line desserved by the station*
+    LINKS [linkID]
+        linkID *- ID of the link*
+        from *- First station*
+        line_from *- Line of first station*
+        to *- Second station*
+        line_to *- Line of second station*
+        time *- travel time on the link*
+        STEPS [] *- All the steps of the link (used on render)
+            type *- Type of step (Sharp/Round/...)*
+            posx *- Step point X position*
+            posy *- Step point Y position*
+```
