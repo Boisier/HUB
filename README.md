@@ -15,7 +15,8 @@ The folder name must be the same as the **network_tag** in the database.
 
 ## Setting up the network folder
 
-Every network folder needs to have at list two files on its root :
+Every network folder needs to have at least three files on its root.
+Those three files *WILL* be called by HUB.
 
 ### master.php
 
@@ -54,7 +55,7 @@ class Printer
     
     function background()
     {
-       //print background map
+       //print map's background
     }
     
     function vertice($link, $NETWORK, $LINES)
@@ -70,3 +71,30 @@ class Printer
 
 ```
 
+This can call other php files if needed. Just make sure that all the files are in the same network folder.
+
+### master.css
+
+This file contain all the styling rules you want to apply to the viewer.
+It is imported after **main.css**, this let you customize the whole interface, in order to make it match your map's design.
+
+### logo.png
+
+Logo of your map/network. Use only for design purposes, but still required.
+No support yet for other extensions, must be **logo.png**.
+
+## The Global Query System
+
+In order to improve security and stability, third-party networks interact with the database through the **Global Query System (GQS)** class.
+The GQS give the user the possibility to call different methods to interact with the database. A GQS query will always return an Array, with the exception of *setNetwork* and *isNetwork()* methods.
+
+The methods available at this time are :
+* **setNetwork(network_tag)** - Define current network to be used with future queries. Return void
+* **isNetwork(network_tag)** - return true or false if the network is in the database or not. Return bool.
+* **getNetworkInfos()** - Return informations about the current network
+* **getAllLines()** - Return all the metrolines of the current network
+* **getAllStations()** - Return all the stations of the current network
+* **getStationNeighboors()** - Return all the lines of the neighboors of a station
+* **getStationSpecs()** - Return the specs of a station
+* **getLinkSteps()** - Return the drawing steps of a particular link
+* *More to come...*
