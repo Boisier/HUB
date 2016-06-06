@@ -112,6 +112,7 @@ When a map is rendered, the script start by gathering informations about the net
 ```
 Array [lineID]
     lineID *- ID of the line*
+    type *- type of the line*
     name *- Name of the line*
     hex *- Color of the line (#000000)*
 ```
