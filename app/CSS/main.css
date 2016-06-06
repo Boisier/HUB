@@ -48,7 +48,7 @@ body
     border-bottom: 3px solid #373636;
 }
 
-#route header #networkIcon
+#route header .networkIcon
 {
     display: inline-block;
     vertical-align: middle;
@@ -56,7 +56,7 @@ body
     height: 100px;
 }
 
-#route header #mainTitle
+#route header .mainTitle
 {
     display: inline-block;
     vertical-align: middle;
@@ -133,6 +133,51 @@ body
     text-align: center;
     font-size: 16pt;
 }
+
+
+
+
+
+
+
+/******************************************/
+/*  Route Details                         */
+/******************************************/
+
+#routeDetails
+{
+    height: 100%;
+    border-top: 3px solid #373636;
+}
+
+#routeDetails header
+{
+    height: 140px;
+    padding: 20px;
+    
+    border-bottom: 3px solid #373636;
+}
+
+#routeDetails header .networkIcon
+{
+    display: inline-block;
+    vertical-align: middle;
+    width: 100px;
+    height: 100px;
+}
+
+#routeDetails header .mainTitle
+{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 15px;
+    
+    font-size: 80px;
+    line-height: 80px;
+    color: #FFF;
+}
+
+
 
 
 

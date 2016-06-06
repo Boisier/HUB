@@ -77,7 +77,7 @@ class printer
                 }
             }
         }
-    }
+    } 
     
     function station($station, $NETWORK, $LINES)
     {
@@ -242,6 +242,130 @@ class printer
 
         echo '<foreignObject x="'.($x+$textPosX-200).'" y="'.($y+$textPosY-15).'" width="300" height="150">
                     <div class="stationLabel'.$textClasses.' '.$textAlign.'"><span class="libelle">'.$txt.'</span></div>
+                </foreignObject>';
+    }
+    
+    public function detailsLink($linkID, $startX, $endX, $NETWORK, $LINES)
+    {
+        echo $linkID;
+        $posY = 200;
+        $link = $NETWORK['LINKS'][$linkID];
+        $printTime = false;
+        
+        if(($link['from'] != $link['to']) && ($link['line_from'] == $link['line_to']))
+        {
+            //Le lien n'est pas interne à une station, on le dessine en tant que tracé de train
+            $color = $LINES[$link['line_from']]['hex'];
+        }
+        else
+        {
+            $color = $LINES[0]['hex'];
+        
+            $posX = $startX + (($endX - $startX) / 2);    
+            $printTime = true;
+        }
+        
+        echo '<line 
+            x1="'.$startX.'%" 
+            y1="'.$posY.'" 
+            x2="'.$endX.'%" 
+            y2="'.$posY.'"
+            class="line selectedPath" 
+            style="stroke:'.$color.'" />';       
+
+        if($printTime)
+        {
+            echo '<foreignObject x="0" y="'.($posY - 22).'" width="100%" height="150">
+                    <div class="walkingTimeBloc" style="margin-left:'.$posX.'%">
+                        <p class="walkingTime" style="margin-left:-51px">
+                            <span class="libelle">'.$link['time'].' min</span><br>
+                            <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-WALK.png"></span>
+                        </p>
+                    </div>
+                </foreignObject>';
+        }
+    }
+    
+    public function detailsStation($stationID, $posX, $extrem, $NETWORK, $LINES)
+    {
+        $station = $NETWORK['STATIONS'][$stationID];
+        $sID = $station['station_id'];
+
+        $frontClasses = "";
+        $backClasses = "";
+        $textClasses = "";
+        $textIcons = "";
+        $textDotes = "";
+        $addDotes = false;
+        $isIntersec = false;
+        $isTerminus = false;
+        $r = "5.5";
+        $rAddon = 0;
+        $x = $station['posx'];
+        $y = 200;
+        $displayPos = $station['displayPos'];
+        $stationName = $station['name'];
+        $textAlign = "middle";
+        $lineColor = $station['main_hex'];
+        $cuts = $station['cuts'];
+
+        $specs = $this->gqs->getStationSpecs($sID);
+
+        foreach($specs as $spec)
+        {
+            switch($spec['spec_type'])
+            {
+                case "MULTIMODAL":
+                    $backClasses .= " multimodal";
+                    $rAddon = 2;
+                break;
+                case "PARKING":
+                    $textIcons .= ' <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-PARKING.png"></span>';
+                break;
+                case "ELEVATOR":
+                    $textIcons .= ' <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-ELEVATOR.png"></span><span class="specLine" style="background-color:'.$LINES[$spec['spec_value']]['hex'].'"></span>';
+                break;
+                case "BUSTERMINAL":
+                    $textIcons .= ' <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-BUSTERMINAL.png"></span>';
+                break;
+                case "TRAINSTATION":
+                    $textIcons .= ' <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-TRAINSTATION.png"></span>';
+                break;
+            }
+        }
+        
+        if($extrem)
+        {
+            $frontClasses .= " terminus";
+            $backClasses .= " terminus";
+            $rAddon = 2;
+            $isTerminus = true;
+            $addDotes = true;
+        }
+
+        if(count($station["LINES"]) != 1)
+        {
+            $backClasses .= " intersec";
+            $rAddon = 2;
+            $addDotes = true;
+        }
+
+        if($isTerminus && $isIntersec)
+        {
+            $r = "6";
+        }
+
+        if($rAddon != 0)
+        {
+            echo '<circle cx="'.$posX.'%" cy="'.$y.'" r="'.($r+$rAddon).'px" class="station'.$backClasses.' stationBtn" />';
+        }
+
+        echo '<circle cx="'.$posX.'%" cy="'.$y.'" r="'.$r.'px" class="station'.$frontClasses.' stationBtn" />';
+        
+        $txt = $textDotes.'<span class="name">'.$stationName.'</span>'.$textIcons;
+
+        echo '<foreignObject x="'.($posX).'%" y="'.($y-25).'" width="300" height="150">
+                    <div class="stationLabel'.$textClasses.' details"><span class="libelle">'.$txt.'</span></div>
                 </foreignObject>';
     }
 }
