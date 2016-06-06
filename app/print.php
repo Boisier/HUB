@@ -120,8 +120,10 @@ switch($_GET['action'])
         for($i = 0; $i < count($STATIONS); $i++)
         {
             $posX = $steps * $i + 5;
-        
-            $printer->detailsStation($STATIONS[$i], $posX, $NETWORK, $LINES);
+            
+            $extrem = $i == 0 ? true : ($i+1) == count($STATIONS) ? true : false;
+            
+            $printer->detailsStation($STATIONS[$i], $posX, $extrem, $NETWORK, $LINES);
         }
         
     break;
