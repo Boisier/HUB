@@ -142,7 +142,10 @@ else
                     Itinéraire
                 </div>
             </header> 
-            <svg id="routeLine" width="100%" height="250"></svg>
+            <svg id="routeLine" width="100%" height="300"></svg>
+            <section id="routeStats">
+
+            </section>
         </section>
     </body>
 </html>

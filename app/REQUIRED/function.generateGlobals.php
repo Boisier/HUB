@@ -19,10 +19,11 @@ function generateGlobals($netTag)
     foreach($linesFetch as $l)
     {
         $lineID = $l['line_id'];
+        $type = $l['line_type'];
         $name = $l['line_name'];
         $hex = $l['line_hex'];
 
-        $LINES[$lineID] = ['lineID' => $lineID, 'name' => $name, 'hex' => $hex];
+        $LINES[$lineID] = ['lineID' => $lineID, 'type' => $type, 'name' => $name, 'hex' => $hex];
     }
 
     //Fetch all the stations of the network

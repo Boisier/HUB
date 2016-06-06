@@ -148,6 +148,7 @@ body
 {
     height: 100%;
     border-top: 3px solid #373636;
+    background-color: #000;
 }
 
 #routeDetails header
@@ -175,6 +176,15 @@ body
     font-size: 80px;
     line-height: 80px;
     color: #FFF;
+}
+
+#routeDetails svg
+{
+    background-color: #373636;
+}
+
+#routeStats
+{
 }
 
 
