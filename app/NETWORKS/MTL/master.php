@@ -250,6 +250,7 @@ class printer
         echo $linkID;
         $posY = 200;
         $link = $NETWORK['LINKS'][$linkID];
+        $printTime = false;
         
         if(($link['from'] != $link['to']) && ($link['line_from'] == $link['line_to']))
         {
@@ -259,6 +260,9 @@ class printer
         else
         {
             $color = $LINES[0]['hex'];
+        
+            $posX = $startX + (($endX - $startX) / 2);    
+            $printTime = true;
         }
         
         echo '<line 
@@ -267,10 +271,22 @@ class printer
             x2="'.$endX.'%" 
             y2="'.$posY.'"
             class="line selectedPath" 
-            style="stroke:'.$color.'" />'; 
+            style="stroke:'.$color.'" />';       
+
+        if($printTime)
+        {
+            echo '<foreignObject x="0" y="'.($posY - 22).'" width="100%" height="150">
+                    <div class="walkingTimeBloc" style="margin-left:'.$posX.'%">
+                        <p class="walkingTime" style="margin-left:-51px">
+                            <span class="libelle">'.$link['time'].' min</span><br>
+                            <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-WALK.png"></span>
+                        </p>
+                    </div>
+                </foreignObject>';
+        }
     }
     
-    public function detailsStation($stationID, $posX, $NETWORK, $LINES)
+    public function detailsStation($stationID, $posX, $extrem, $NETWORK, $LINES)
     {
         $station = $NETWORK['STATIONS'][$stationID];
         $sID = $station['station_id'];
@@ -299,13 +315,6 @@ class printer
         {
             switch($spec['spec_type'])
             {
-                case "TERMINUS":
-                    $frontClasses .= " terminus";
-                    $backClasses .= " terminus";
-                    $rAddon = 2;
-                    $isTerminus = true;
-                    $addDotes = true;
-                break;
                 case "MULTIMODAL":
                     $backClasses .= " multimodal";
                     $rAddon = 2;
@@ -323,6 +332,15 @@ class printer
                     $textIcons .= ' <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-TRAINSTATION.png"></span>';
                 break;
             }
+        }
+        
+        if($extrem)
+        {
+            $frontClasses .= " terminus";
+            $backClasses .= " terminus";
+            $rAddon = 2;
+            $isTerminus = true;
+            $addDotes = true;
         }
 
         if(count($station["LINES"]) != 1)
