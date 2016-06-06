@@ -5,7 +5,7 @@
 //   Montréal Network
 
 //Defining currentNamepsace to avoir conflict
-namespace Networks\MTL;
+namespace Networks\PRS;
 
 //Inclusion of global query system (GQS)
 use \GQS;
@@ -28,7 +28,7 @@ class printer
     
     function background()
     {
-       echo '<image x="20" y="0" width="1000" height="1550" xlink:href="'.$this->displayPath.'/background.svg" />';
+       echo '<image x="0" y="0" width="1350" height="1350" xlink:href="'.$this->displayPath.'/background.svg" />';
     }
     
     function vertice($link, $NETWORK, $LINES)
@@ -91,7 +91,7 @@ class printer
         $addDotes = false;
         $isIntersec = false;
         $isTerminus = false;
-        $r = "5.5";
+        $r = "3.5";
         $rAddon = 0;
         $x = $station['posx'];
         $y = $station['posy'];
@@ -111,7 +111,6 @@ class printer
                     $frontClasses .= " terminus";
                     $backClasses .= " terminus";
                     $textClasses .= " terminus";
-                    $rAddon = 2;
                     $isTerminus = true;
                     $addDotes = true;
                 break;
@@ -134,7 +133,7 @@ class printer
             }
         }
 
-        if(count($station["LINES"]) != 1)
+        if(count($station["LINES"]) > 1)
         {
             $backClasses .= " intersec";
             $textClasses .= " intersec";
@@ -145,6 +144,10 @@ class printer
         if($isTerminus && $isIntersec)
         {
             $r = "6";
+        }
+        else if($isTerminus && !$isIntersec)
+        {
+            $lineColor = "#000";
         }
 
         //Position du libelle
@@ -204,7 +207,9 @@ class printer
         {
             for($i = 0; $i < count($station["LINES"]); $i++)
             {
-                $textDotes .= '<span class="lineDot" style="background-color:'.$LINES[$station["LINES"][$i]]['hex'].'"></span>';
+                $textDotes .= '<span class="lineDot" style="background-color:'.$LINES[$station["LINES"][$i]]['hex'].'">
+                    '.$LINES[$station["LINES"][$i]]['name'].' 
+                </span>';
             }
         }
 
@@ -213,8 +218,8 @@ class printer
             echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.($r+$rAddon).'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$backClasses.' stationBtn" />';
         }
 
-        echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.$r.'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$frontClasses.' stationBtn" />';
-        echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.($r+$rAddon+1).'px" data-stationID="'.$sID.'" class="station-'.$sID.' stationOutline stationBtn" style="stroke:'.$lineColor.';" />';
+        echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.$r.'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$frontClasses.' stationBtn" style="fill:'.$lineColor.'"/>';
+        //echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.($r+$rAddon+1).'px" data-stationID="'.$sID.'" class="station-'.$sID.' stationOutline stationBtn" style="stroke:'.$lineColor.';" />';
 
         if($cuts[0] != 0)
         {                

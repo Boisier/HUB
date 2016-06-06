@@ -4,14 +4,41 @@
 
 @font-face 
 {
-  font-family: "Univers";
-  src: url("FONTS/Univers.otf");
+    font-family: "Parisine";
+    src: url("FONTS/Parisine-Regular.otf");
+    font-weight: normal;
+}
+
+@font-face 
+{
+    font-family: "Parisine";
+    src: url("FONTS/Parisine-Bold.otf");
+    font-weight: 700;
 }
 
 body
 {
-    background-color: #000;
-    font-family: Univers, sans-serif;
+    background-color: #FFFDEE;
+    font-family: Parisine, sans-serif;
+    min-height: 1350px;
+}
+
+#route
+{
+    display: none;
+}
+
+#mapContainer
+{
+    width: 100%;
+    margin: 0;
+}
+
+#mainMap
+{
+    width: 1350px;
+    height: 1350px;
+    margin-left: calc((100% - 1350px) / 2);
 }
 
 
@@ -27,7 +54,8 @@ body
 }
 
 .line.selected,
-.line.selectedPath
+.line.selectedPath,
+.line.selectedRoute
 {
     stroke-width:18;
 }
@@ -42,12 +70,11 @@ body
 
 .station
 {
-    fill: #FFF;
 }
 
 .station.terminus
 {
-    fill:#FFF;
+    fill:#000;
 }
 
 .station.intersec
@@ -88,11 +115,8 @@ body
 {
     width: 200px;
     margin-top: -5px;
-    color: #FFF;
-    font-weight: bold;
-    text-transform: uppercase;
+    color: #2E2D2C;
     font-size: 8pt;
-    letter-spacing: 1px;
     line-height: 10pt;
     pointer-events: none;
 }
@@ -117,11 +141,14 @@ body
 
 .stationLabel .lineDot
 {
-    width: 11px;
-    height: 11px;
+    width: 17px;
+    height: 17px;
     margin-right: 5px;
+    color: #FFF;
     
     border-radius: 15px;
+    line-height: 14pt;
+    text-align: center;
 }
 
 .stationLabel.start
@@ -145,10 +172,10 @@ body
 .stationLabel.terminus .libelle
 {
     display: inline-block;
-    background-color: #4a4a49;
-    font-size: 10pt;
     padding: 3px 5px;
-    border-radius: 3px;
+    
+    font-size: 10pt;
+    font-weight: bold;
 }
 .lineDot
 {
