@@ -70,6 +70,7 @@ function generateGlobals($netTag)
                  "to" => $l['station_b'],
                  "line_to" => $l['line_b'],
                  "time" => $l['link_value'],
+                 "comment" => $l['link_comment'],
                  "STEPS" => []];
 
         $steps = $gqs->getLinkSteps($l['station_a'], $l['station_b']);

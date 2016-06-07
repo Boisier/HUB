@@ -130,7 +130,7 @@ class GQS
         $netTag = $this->netTag(true);
         
         //Get all lines of network
-        $stmt = $this->bdd->prepare("SELECT links.* FROM links JOIN metrolines ON metrolines.line_id = links.line_a WHERE metrolines.network_tag = :tag ORDER BY line_id"); 
+        $stmt = $this->bdd->prepare("SELECT links.* FROM links JOIN metrolines ON metrolines.line_id = links.line_a WHERE metrolines.network_tag = :tag ORDER BY link_comment, line_id"); 
         $stmt->execute(array(":tag" => $netTag));
         $links = $stmt->fetchAll();
         

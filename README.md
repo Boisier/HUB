@@ -141,6 +141,7 @@ Array []
         to - Second station
         line_to - Line of second station
         time - travel time on the link
+        comment - comment of the link
         STEPS [] - All the steps of the link (used on render)
             type - Type of step (Sharp/Round/...)
             posx - Step point X position
