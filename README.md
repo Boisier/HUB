@@ -166,7 +166,7 @@ All the drawn links must have three specific `data-` attributes:
 
 If your link is made of multiple SVG elements, just assign them all the three `data-` attributes.
 
-**Reserved CSS class** : The CSS class **selectedPath** is used by HUB to highlight the rout found. You can't use selectedPath as one of your own CSS classes, but you can style it in your *master.css*.
+**Reserved CSS class** : The CSS class **selectedPath** is used by HUB to highlight the route found. You can't use selectedPath as one of your own CSS classes, but you can style it in your *master.css*.
 
 If you want to print SVG elements related to the links, but who don't need to use **selectedPath** class, just ommit the data- attributes, without them, HUB will just ignore the elements.
 
@@ -177,6 +177,8 @@ All the printed stations must have one specific `data-` attribute to be recogniz
 
 If your station is made of multiple SVG elements, just assign them all the `data-stationid` attribute.
 The elements who form the clickable part of the station icon must have the class **.stationBtn**. HUB use it to assign the eventListeners.
+
+**Reserved CSS class** : The CSS class **selectedPath** is used by HUB to highlight the route found. You can't use selectedPath as one of your own CSS classes, but you can style it in your *master.css*.
 
 If you want to print SVG elements related to the links, but who don't need to use **selectedPath** class, just ommit the data- attributes, without them, HUB will just ignore the elements.
 
