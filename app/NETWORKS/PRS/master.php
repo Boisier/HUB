@@ -45,35 +45,51 @@ class printer
             $linkPoints = [];
 
             //On insère toutes les étapes des tracés
-            array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['from']]['posx'], "y" => $NETWORK['STATIONS'][$link['from']]['posy']]);
+            array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['from']]['posx'], "y" => $NETWORK['STATIONS'][$link['from']]['posy'], "type" => "angle"]);
 
             foreach($link['STEPS'] as $step)
             {
-                array_push($linkPoints, ["x" => $step['posx'], "y" => $step['posy']]);
+                array_push($linkPoints, ["x" => $step['posx'], "y" => $step['posy'], "type" => $step['type']]);
             }
 
-            array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['to']]['posx'], "y" => $NETWORK['STATIONS'][$link['to']]['posy']]);
+            array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['to']]['posx'], "y" => $NETWORK['STATIONS'][$link['to']]['posy'], "type" => "angle"]);
 
             foreach($linkPoints as $key => $points)
             {
+                echo $linkPoints[$key]["type"]."yo";
                 //On vérifie que l'on est pas à la fin du tableau
-                if($key+1 != count($linkPoints))
+                if($key+1 != count($linkPoints) && $linkPoints[$key+1]["type"] != "arcmiddle")
                 {
                     $x1 = $linkPoints[$key]["x"];
                     $y1 = $linkPoints[$key]["y"];
                     $x2 = $linkPoints[$key+1]["x"];
                     $y2 = $linkPoints[$key+1]["y"];
-
-                    echo '<line 
-                        x1="'.$x1.'" 
-                        y1="'.$y1.'" 
-                        x2="'.$x2.'" 
-                        y2="'.$y2.'" 
-                        data-linkid="'.$linkID.'"
-                        data-stationa="'.$sA.'"
-                        data-stationb="'.$sB.'"
-                        class="link-'.$linkID.' line'.$this->globalClasses.'" 
-                        style="stroke:'.$color.'" />';
+                    
+                    $endOfLine = 'data-linkid="'.$linkID.'"
+                                  data-stationa="'.$sA.'"
+                                  data-stationb="'.$sB.'"
+                                  class=" line'.$this->globalClasses.'" 
+                                  style="stroke:'.$color.'" />';
+                    
+                    if($linkPoints[$key]["type"] == "angle")
+                    {                    
+                        echo '<line 
+                            x1="'.$x1.'" 
+                            y1="'.$y1.'" 
+                            x2="'.$x2.'" 
+                            y2="'.$y2.'" 
+                            '.$endOfLine;
+                    }
+                    else if($linkPoints[$key]["type"] == "arcmiddle")
+                    {
+                        $x0 = $linkPoints[$key-1]["x"];
+                        $y0 = $linkPoints[$key-1]["y"];
+                        
+                        echo '<path 
+                            d="M'.$x0.' '.$y0.' Q '.$x1.' '.$y1.' '.$x2.' '.$y2.'" 
+                            fill="none"
+                            '.$endOfLine;
+                    }
                 }
             }
         }
@@ -100,6 +116,7 @@ class printer
         $textAlign = "middle";
         $lineColor = $station['main_hex'];
         $cuts = $station['cuts'];
+        $terminusHere = [];
 
         $specs = $this->gqs->getStationSpecs($sID);
 
@@ -109,10 +126,11 @@ class printer
             {
                 case "TERMINUS":
                     $frontClasses .= " terminus";
-                    $backClasses .= " terminus";
                     $textClasses .= " terminus";
                     $isTerminus = true;
                     $addDotes = true;
+                    
+                    array_push($terminusHere, $spec['spec_value']);
                 break;
                 case "MULTIMODAL":
                     $backClasses .= " multimodal";
@@ -133,84 +151,22 @@ class printer
             }
         }
 
-        if(count($station["LINES"]) > 1)
+        if(count($station["LINES"]) != 1)
         {
-            $backClasses .= " intersec";
+            $isIntersec = true;
+            $frontClasses .= " intersec";
             $textClasses .= " intersec";
-            $rAddon = 2;
             $addDotes = true;
         }
 
-        if($isTerminus && $isIntersec)
-        {
-            $r = "6";
-        }
-        else if($isTerminus && !$isIntersec)
+        if($isTerminus && !$isIntersec)
         {
             $lineColor = "#000";
         }
-
-        //Position du libelle
-        $textPosX = 0;
-        $textPosY = 0;
-
-        switch($displayPos)
+        
+        if($isIntersec)
         {
-            case "top":
-                $textPosX = 0;
-                $textPosY = -20;
-                $textAlign = "middle";
-                $textClasses .= " top";
-            break;
-            case "topright":
-                $textPosX = 10;
-                $textPosY = -12;
-                $textAlign = "start";
-            break;
-            case "right":
-                $textPosX = 18;
-                $textPosY = 3;
-                $textAlign = "start";
-            break;
-            case "bottomright":
-                $textPosX = 15;
-                $textPosY = 15;
-                $textAlign = "start";
-            break;
-            case "bottom":
-                $textPosX = 0;
-                $textPosY = 20;
-                $textAlign = "middle";
-                $textClasses .= " bottom";
-            break;
-            case "bottomleft":
-                $textPosX = -13;
-                $textPosY = 15;
-                $textAlign = "end";
-                $textClasses .= " moveleft";
-            break;
-            case "left":
-                $textPosX = -18;
-                $textPosY = 3;
-                $textAlign = "end";
-                $textClasses .= " moveleft";
-            break;
-            case "topleft":
-                $textPosX = -15;
-                $textPosY = -15;
-                $textAlign = "end";
-                $textClasses .= " moveleft";
-            break;
-        }
-
-        if(count($station["LINES"]) != 1 || $isTerminus || $isIntersec)
-        {
-            for($i = 0; $i < count($station["LINES"]); $i++)
-            {
-                $textDotes .= '<span class="lineDot" style="background-color:'.$LINES[$station["LINES"][$i]]['hex'].'">
-                    '.$LINES[$station["LINES"][$i]]['name'].' 
-                </span>';
-            }
+            $lineColor = "#FFF";
         }
 
         if($rAddon != 0)
@@ -219,7 +175,18 @@ class printer
         }
 
         echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.$r.'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$frontClasses.' stationBtn" style="fill:'.$lineColor.'"/>';
-        //echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.($r+$rAddon+1).'px" data-stationID="'.$sID.'" class="station-'.$sID.' stationOutline stationBtn" style="stroke:'.$lineColor.';" />';
+        
+        //Label
+
+        if($isTerminus)
+        {
+            for($i = 0; $i < count($terminusHere); $i++)
+            {
+                $textDotes .= '<span class="lineDot" style="background-color:'.$LINES[$station["LINES"][$i]]['hex'].'">
+                    '.$LINES[$station["LINES"][$i]]['name'].' 
+                </span>';
+            }
+        }
 
         if($cuts[0] != 0)
         {                
@@ -245,9 +212,9 @@ class printer
             $txt = $textDotes.'<span class="name">'.$stationName.'</span>'.$textIcons;
         }
 
-        echo '<foreignObject x="'.($x+$textPosX-200).'" y="'.($y+$textPosY-15).'" width="300" height="150">
-                    <div class="stationLabel'.$textClasses.' '.$textAlign.'"><span class="libelle">'.$txt.'</span></div>
-                </foreignObject>';
+        echo '<foreignObject x="'.($x-200).'" y="'.($y-100).'" width="400" height="200">
+                    <div class="stationLabel '.$displayPos.' '.$textClasses.'"><span class="libelle"><div>'.$txt.'</div></span></div>
+              </foreignObject>';
     }
     
     public function detailsLink($linkID, $startX, $endX, $NETWORK, $LINES)
@@ -306,7 +273,7 @@ class printer
         $isTerminus = false;
         $r = "5.5";
         $rAddon = 0;
-        $x = $station['posx'];
+        $x = $posX;
         $y = 200;
         $displayPos = $station['displayPos'];
         $stationName = $station['name'];
@@ -348,7 +315,7 @@ class printer
             $addDotes = true;
         }
 
-        if(count($station["LINES"]) != 1)
+        if(count($station["LINES"]) > 1)
         {
             $backClasses .= " intersec";
             $rAddon = 2;
@@ -362,10 +329,10 @@ class printer
 
         if($rAddon != 0)
         {
-            echo '<circle cx="'.$posX.'%" cy="'.$y.'" r="'.($r+$rAddon).'px" class="station'.$backClasses.' stationBtn" />';
+            echo '<circle cx="'.$posX.'%" cy="'.$y.'" r="'.($r+$rAddon).'px" class="station'.$backClasses.'" />';
         }
 
-        echo '<circle cx="'.$posX.'%" cy="'.$y.'" r="'.$r.'px" class="station'.$frontClasses.' stationBtn" />';
+        echo '<circle cx="'.$posX.'%" cy="'.$y.'" r="'.$r.'px" class="station'.$frontClasses.'" style="fill:'.$lineColor.'"/>';
         
         $txt = $textDotes.'<span class="name">'.$stationName.'</span>'.$textIcons;
 
