@@ -116,6 +116,13 @@ function route(startStation, endStation, final)
 
         $(".line[data-stationa="+sIDA+"][data-stationb="+sIDB+"]").addClass("selectedPath");
         $(".line[data-stationa="+sIDB+"][data-stationb="+sIDA+"]").addClass("selectedPath");
+        
+        if(i == 0)
+        {
+            $(".station-"+sIDA).addClass("selectedPath");
+        }
+        
+        $(".station-"+sIDB).addClass("selectedPath"); 
     }
 
     if(final)
