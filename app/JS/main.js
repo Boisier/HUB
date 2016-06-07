@@ -114,8 +114,8 @@ function route(startStation, endStation, final)
         var sIDA = pointA.split("-")[0];
         var sIDB = pointB.split("-")[0];
 
-        $(".line[data-stationa="+sIDA+"][data-stationb="+sIDB+"]").addClass("selectedPath");
-        $(".line[data-stationa="+sIDB+"][data-stationb="+sIDA+"]").addClass("selectedPath");
+        $("*[data-stationa="+sIDA+"][data-stationb="+sIDB+"]").addClass("selectedPath");
+        $("*[data-stationa="+sIDB+"][data-stationb="+sIDA+"]").addClass("selectedPath");
         
         if(i == 0)
         {
