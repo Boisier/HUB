@@ -90,7 +90,7 @@ else
                 </section>
             </section>
             <div id="mapContainer">
-                <svg width="1000" height="1500" id="mainMap" viewBox="0 350 1000 1500">
+                <svg id="mainMap">
                 <?php
                 //We insert the current Network master
                 require_once "NETWORKS/".$networkTAG."/master.php";

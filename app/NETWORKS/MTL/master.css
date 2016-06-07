@@ -14,6 +14,11 @@ body
     font-family: Univers, sans-serif;
 }
 
+#mainMap
+{    
+    margin-top: -300px;
+}
+
 
 
 /*
@@ -27,7 +32,8 @@ body
 }
 
 .line.selected,
-.line.selectedPath
+.line.selectedPath,
+.line.selectedRoute
 {
     stroke-width:18;
 }

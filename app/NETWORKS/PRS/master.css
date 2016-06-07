@@ -1,0 +1,297 @@
+/*
+ * Corps
+ */ 
+
+@font-face 
+{
+    font-family: "Parisine";
+    src: url("FONTS/Parisine-Regular.otf");
+    font-weight: normal;
+}
+
+@font-face 
+{
+    font-family: "Parisine";
+    src: url("FONTS/Parisine-Bold.otf");
+    font-weight: 700;
+}
+
+body
+{
+    background-color: #FFFDEE;
+    font-family: Parisine, sans-serif;
+    min-height: 1350px;
+}
+
+#route
+{
+    display: none;
+}
+
+#mapContainer
+{
+    width: 100%;
+    margin: 0;
+}
+
+#mainMap
+{
+    width: 1350px;
+    height: 1350px;
+    margin-left: calc((100% - 1350px) / 2);
+}
+
+
+
+/*
+ * Lines
+ */ 
+
+.line
+{
+    stroke-width:3;
+    stroke-linecap: round;
+}
+
+.line.selected,
+.line.selectedPath,
+.line.selectedRoute
+{
+    stroke-width:7;
+}
+
+
+
+
+
+/*
+ * Stations
+ */ 
+
+.stationBtn
+{
+    cursor: pointer;
+    
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+    
+    -webkit-transform: scale(1, 1);
+    transform: scale(1, 1);
+}
+
+.station.terminus
+{
+    fill:#000;
+}
+
+.station.intersec
+{
+    stroke: #000;
+    stroke-width: .67;
+}
+
+.station.multimodal
+{
+    fill:#4A4A49;
+}
+
+.stationBtn:hover
+{
+    stroke-width:3;
+    
+    -webkit-transform: scale(1.5, 1.5);
+    transform: scale(1.5, 1.5);
+    
+    cursor: pointer;
+}
+
+
+
+
+
+
+.stationLabel
+{
+    width: 200px;
+    height: 100px;
+    pointer-events: none;
+    padding: 0;
+}
+
+.stationLabel.top
+{
+    padding-left: 100px;
+}
+
+.stationLabel.topright
+{
+    padding-left: 200px;
+}
+
+.stationLabel.right
+{
+    padding-left: 200px;
+    padding-top: 50px;
+}
+
+.stationLabel.bottomright
+{
+    padding-left: 200px;
+    padding-top: 100px;
+}
+
+.stationLabel.bottom
+{
+    padding-left: 100px;
+    padding-top: 100px;
+}
+
+.stationLabel.bottomleft
+{
+    padding-top: 100px;
+}
+
+.stationLabel.left
+{
+    padding-top: 50px;
+}
+
+.stationLabel .libelle
+{
+    display: table-cell;
+    min-width: 200px;
+    max-width: 200px;
+    height: 100px;
+    padding: 5px;
+    
+    color: #2E2D2C;
+    font-size: 8pt;
+    line-height: 8pt;
+    letter-spacing: -.5px;
+}
+
+.stationLabel.topleft .libelle,
+.stationLabel.top .libelle,
+.stationLabel.topright .libelle
+{
+    vertical-align: bottom;
+}
+
+.stationLabel.bottomleft .libelle,
+.stationLabel.bottom .libelle,
+.stationLabel.bottomright .libelle
+{
+    vertical-align: top;
+}
+
+.stationLabel.left .libelle,
+.stationLabel.right .libelle
+{
+    vertical-align: middle;
+}
+
+.stationLabel.topleft .libelle,
+.stationLabel.left .libelle,
+.stationLabel.bottomleft .libelle
+{
+    text-align: right;
+}
+
+.stationLabel.topright .libelle,
+.stationLabel.right .libelle,
+.stationLabel.bottomright .libelle
+{
+    text-align: left;
+}
+
+.stationLabel.top .libelle,
+.stationLabel.bottom .libelle
+{
+    text-align: center;
+}
+
+.stationLabel .libelle div span,
+.stationLabel .libelle div img
+{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.stationLabel .lineDot
+{
+    width: 17px;
+    height: 17px;
+    margin-right: 5px;
+    color: #FFF;
+    
+    border-radius: 15px;
+    line-height: 15pt;
+    text-align: center;
+}
+
+.stationLabel.terminus .libelle
+{  
+    font-weight: bold;
+}
+.lineDot
+{
+    border-radius: 50%;
+}
+
+.stationLabel .icon img
+{
+    max-height: 9pt;
+}
+
+.stationLabel .specLine
+{
+    height: 11px;
+    width: 2px;
+    border-radius: 10px;
+    margin-left: 3px
+}
+
+.stationLabel.intersec .icon img,
+.stationLabel.terminus .icon img
+{
+    max-height: 12pt;
+}
+
+.stationLabel.intersec .specLine,
+.stationLabel.terminus .specLine
+{
+    height: 14px;
+}
+
+.stationLabel.details
+{
+    -webkit-transform:rotate(-45deg);
+    transform:rotate(-45deg);
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+    
+    font-size: 10pt;
+}
+
+.stationLabel.details .libelle
+{
+    color: #FFF;
+}
+
+.walkingTimeBloc
+{
+    padding-top: 12px;
+}
+
+.walkingTime
+{    
+    width: 100px;
+    
+    color: #000;
+    text-align: center;
+}
+
+.walkingTime .icon img
+{    
+    height: 20px;
+}
