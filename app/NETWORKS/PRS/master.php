@@ -33,7 +33,7 @@ class printer
     
     function vertice($link, $NETWORK, $LINES)
     {
-        if(($link['from'] != $link['to']) && ($link['line_from'] == $link['line_to']))
+        if($link['from'] != $link['to'] && $link['line_from'] == $link['line_to'])
         {
             //Le lien n'est pas interne à une station, on le dessine
             $linkID = $link['linkID'];
@@ -68,7 +68,7 @@ class printer
                     $endOfLine = 'data-linkid="'.$linkID.'"
                                   data-stationa="'.$sA.'"
                                   data-stationb="'.$sB.'"
-                                  class=" line'.$this->globalClasses.'" 
+                                  class="line '.$this->globalClasses.'" 
                                   style="stroke:'.$color.'" />';
                     
                     if($linkPoints[$key]["type"] == "angle")
@@ -93,6 +93,37 @@ class printer
                 }
             }
         }
+        else if($link['comment'] == "corr")
+        {
+            $linkID = $link['linkID'];
+            $sA = $link['from'];
+            $sB = $link['to'];
+            
+            $x1 = $NETWORK['STATIONS'][$link['from']]['posx'];
+            $y1 = $NETWORK['STATIONS'][$link['from']]['posy'];
+            $x2 = $NETWORK['STATIONS'][$link['to']]['posx'];
+            $y2 = $NETWORK['STATIONS'][$link['to']]['posy'];
+            
+            echo '<line 
+                x1="'.$x1.'" 
+                y1="'.$y1.'" 
+                x2="'.$x2.'" 
+                y2="'.$y2.'" 
+                data-linkid="'.$linkID.'"
+                data-stationa="'.$sA.'"
+                data-stationb="'.$sB.'"
+                class="corr back'.$this->globalClasses.'"/>';  
+            
+            echo '<line 
+                x1="'.$x1.'" 
+                y1="'.$y1.'" 
+                x2="'.$x2.'" 
+                y2="'.$y2.'" 
+                data-linkid="'.$linkID.'"
+                data-stationa="'.$sA.'"
+                data-stationb="'.$sB.'"
+                class="corr front'.$this->globalClasses.'"/>';  
+        }
     } 
     
     function station($station, $NETWORK, $LINES)
@@ -107,6 +138,8 @@ class printer
         $addDotes = false;
         $isIntersec = false;
         $isTerminus = false;
+        $display = true;
+        $inCorr = false;
         $r = "3.5";
         $rAddon = 0;
         $x = $station['posx'];
@@ -136,6 +169,9 @@ class printer
                     $backClasses .= " multimodal";
                     $rAddon = 2;
                 break;
+                case "CORR":
+                    $inCorr = true;
+                break;
                 case "PARKING":
                     $textIcons .= ' <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-PARKING.png"></span>';
                 break;
@@ -158,32 +194,43 @@ class printer
             $textClasses .= " intersec";
             $addDotes = true;
         }
-
-        if($isTerminus && !$isIntersec)
+        
+        if($inCorr)
+        {
+            $r = 2.5;
+            
+            if(!$isTerminus)
+            {
+                $display = false;
+            }
+            else
+            {
+                $frontClasses = "";
+                $rAddon = 0;
+            }
+        }
+        else if($isTerminus && !$isIntersec)
         {
             $lineColor = "#000";
         }
         
-        if($isIntersec)
+        if($display)
         {
-            $lineColor = "#FFF";
-        }
+            if($rAddon != 0)
+            {
+                echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.($r+$rAddon).'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$backClasses.' stationBtn" />';
+            }
 
-        if($rAddon != 0)
-        {
-            echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.($r+$rAddon).'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$backClasses.' stationBtn" />';
+            echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.$r.'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$frontClasses.' stationBtn" style="fill:'.$lineColor.'"/>';
         }
-
-        echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.$r.'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$frontClasses.' stationBtn" style="fill:'.$lineColor.'"/>';
-        
         //Label
 
         if($isTerminus)
         {
             for($i = 0; $i < count($terminusHere); $i++)
             {
-                $textDotes .= '<span class="lineDot" style="background-color:'.$LINES[$station["LINES"][$i]]['hex'].'">
-                    '.$LINES[$station["LINES"][$i]]['name'].' 
+                $textDotes .= '<span class="lineDot" style="background-color:'.$LINES[$terminusHere[$i]]['hex'].'">
+                    '.$LINES[$terminusHere[$i]]['name'].' 
                 </span>';
             }
         }
@@ -212,9 +259,12 @@ class printer
             $txt = $textDotes.'<span class="name">'.$stationName.'</span>'.$textIcons;
         }
 
-        echo '<foreignObject x="'.($x-200).'" y="'.($y-100).'" width="400" height="200">
+        if($displayPos != "none")
+        {
+            echo '<foreignObject x="'.($x-200).'" y="'.($y-100).'" width="400" height="200">
                     <div class="stationLabel '.$displayPos.' '.$textClasses.'"><span class="libelle"><div>'.$txt.'</div></span></div>
-              </foreignObject>';
+                    </foreignObject>';
+        }
     }
     
     public function detailsLink($linkID, $startX, $endX, $NETWORK, $LINES)

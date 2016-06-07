@@ -60,6 +60,28 @@ body
     stroke-width:7;
 }
 
+.corr
+{
+    stroke-linecap: round;
+}
+
+.corr.back
+{
+    stroke: #000;
+    stroke-width: 8;
+}
+
+.corr.front
+{
+    stroke: #FFF;
+    stroke-width: 6.7;
+}
+
+.corr.selectedPath
+{
+    stroke: #000;
+}
+
 
 
 
@@ -86,6 +108,7 @@ body
 
 .station.intersec
 {
+    fill:#FFF!important;
     stroke: #000;
     stroke-width: .67;
 }
@@ -93,6 +116,11 @@ body
 .station.multimodal
 {
     fill:#4A4A49;
+}
+
+.station.selectedPath
+{
+    fill:#000!important;
 }
 
 .stationBtn:hover
