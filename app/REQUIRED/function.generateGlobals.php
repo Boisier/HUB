@@ -40,7 +40,7 @@ function generateGlobals($netTag)
         $displayPos = $s['display_pos'];
         $cuts = explode(",", $s['display_cut']);
 
-        $NETWORK["STATIONS"][$stationID] = ['station_id' => $stationID, 'name' => $name, 'cuts' => $cuts, 'main_hex' => $main_hex, 'posx' => $posx, 'posy' => $posy, 'displayPos' => $displayPos, "LINES" => [], "PLATEFORMS" => []];
+        $NETWORK["STATIONS"][$stationID] = ['station_id' => $stationID, 'name' => $name, 'cuts' => $cuts, 'main_hex' => $main_hex, 'posx' => $posx, 'posy' => $posy, 'displayPos' => $displayPos, "LINES" => [], "PLATFORMS" => []];
 
         //Fetch neighboors of station
         $neighboors = $gqs->getStationNeighboors($stationID);
@@ -67,7 +67,8 @@ function generateGlobals($netTag)
                 "platformID" => $p["platform_id"],
                 "type" => $p["platform_type"],
                 "posx" => $p["platform_posx"],
-                "posy" => $p["platform_posy"]
+                "posy" => $p["platform_posy"],
+                "displayPos" => $p["display_pos"]
             ];
         }
     }
