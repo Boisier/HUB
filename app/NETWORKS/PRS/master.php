@@ -45,15 +45,28 @@ class printer
             $linkPoints = [];
 
             //On insère toutes les étapes des tracés
-            array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['from']]['posx'], "y" => $NETWORK['STATIONS'][$link['from']]['posy'], "type" => "angle"]);
-
+            if($link['platform_from'] != NULL)
+            {
+                array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['from']]["PLATFORMS"][$link['platform_from']]['posx'], "y" => $NETWORK['STATIONS'][$link['from']]["PLATFORMS"][$link['platform_from']]['posy'], "type" => "angle"]);
+            }
+            else
+            {
+                array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['from']]['posx'], "y" => $NETWORK['STATIONS'][$link['from']]['posy'], "type" => "angle"]);
+            }
+            
             foreach($link['STEPS'] as $step)
             {
                 array_push($linkPoints, ["x" => $step['posx'], "y" => $step['posy'], "type" => $step['type']]);
             }
-
-            array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['to']]['posx'], "y" => $NETWORK['STATIONS'][$link['to']]['posy'], "type" => "angle"]);
-
+            if($link['platform_to'] != NULL)
+            {
+                array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['to']]["PLATFORMS"][$link['platform_to']]['posx'], "y" => $NETWORK['STATIONS'][$link['to']]["PLATFORMS"][$link['platform_to']]['posy'], "type" => "angle"]);
+            }
+            else
+            {
+                array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['to']]['posx'], "y" => $NETWORK['STATIONS'][$link['to']]['posy'], "type" => "angle"]);
+            }
+            
             foreach($linkPoints as $key => $points)
             {
                 echo $linkPoints[$key]["type"]."yo";
@@ -96,24 +109,12 @@ class printer
         else if($link['comment'] == "corr")
         {
             $linkID = $link['linkID'];
-            $sA = $link['from'];
-            $sB = $link['to'];
+            $sID = $link['from'];
             
-            $x1 = $NETWORK['STATIONS'][$link['from']]['posx'];
-            $y1 = $NETWORK['STATIONS'][$link['from']]['posy'];
-            $x2 = $NETWORK['STATIONS'][$link['to']]['posx'];
-            $y2 = $NETWORK['STATIONS'][$link['to']]['posy'];
-            
-            echo '<line 
-                x1="'.$x1.'" 
-                y1="'.$y1.'" 
-                x2="'.$x2.'" 
-                y2="'.$y2.'" 
-                data-linkid="'.$linkID.'"
-                data-stationa="'.$sA.'"
-                data-stationb="'.$sB.'"
-                data-stationid="'.$sA.','.$sB.'"
-                class="corr back'.$this->globalClasses.' station-'.$sA.' station-'.$sB.'"/>';  
+            $x1 = $NETWORK['STATIONS'][$link['from']]["PLATFORMS"][$link['platform_from']]['posx'];
+            $y1 = $NETWORK['STATIONS'][$link['from']]["PLATFORMS"][$link['platform_from']]['posy'];
+            $x2 = $NETWORK['STATIONS'][$link['to']]["PLATFORMS"][$link['platform_to']]['posx'];
+            $y2 = $NETWORK['STATIONS'][$link['to']]["PLATFORMS"][$link['platform_to']]['posy'];
             
             echo '<line 
                 x1="'.$x1.'" 
@@ -121,10 +122,21 @@ class printer
                 x2="'.$x2.'" 
                 y2="'.$y2.'" 
                 data-linkid="'.$linkID.'"
-                data-stationa="'.$sA.'"
-                data-stationb="'.$sB.'"
-                data-stationid="'.$sA.','.$sB.'"
-                class="corr front'.$this->globalClasses.' station-'.$sA.' station-'.$sB.'"/>';  
+                data-stationa="'.$sID.'"
+                data-stationb="'.$sID.'"
+                data-stationid="'.$sID.'"
+                class="corr back'.$this->globalClasses.' station-'.$sID.'"/>';  
+            
+            echo '<line 
+                x1="'.$x1.'" 
+                y1="'.$y1.'" 
+                x2="'.$x2.'" 
+                y2="'.$y2.'" 
+                data-linkid="'.$linkID.'"
+                data-stationa="'.$sID.'"
+                data-stationb="'.$sID.'"
+                data-stationid="'.$sID.'"
+                class="corr front'.$this->globalClasses.' station-'.$sID.'"/>';  
         }
     } 
     
