@@ -142,6 +142,7 @@ Array []
             type - type of the platform
             posx - X position of the platform NOT relative to the station
             posy - Y position of the platform NOT relative to the station
+            displayPox - Indication for the position of labels related to this platform
     LINKS [linkID]
         linkID - ID of the link
         from - First station
