@@ -110,6 +110,21 @@ class GQS
         return $neighboors;
     }
     
+    public function getStationPlatforms($stationID = null)
+    {
+        if(is_null($stationID))
+        {
+            throw new Exception("Station ID is not defined", 111);
+        }
+        
+        //Get all stations of network
+        $stmt = $this->bdd->prepare("SELECT * FROM platforms WHERE station_id = :stationID"); 
+        $stmt->execute(array(":stationID" => $stationID));
+        $platforms = $stmt->fetchAll();
+        
+        return $platforms;
+    }
+    
     public function getStationSpecs($stationID = null)
     {
         if(is_null($stationID))
@@ -137,19 +152,16 @@ class GQS
         return $links;
     }
     
-    public function getLinkSteps($sA = null, $sB = null)
+    public function getLinkSteps($linkID = null)
     {
-        if(is_null($sA) || is_null($sB))
+        if(is_null($linkID))
         {
-            throw new Exception("One or more link ID is not defined", 112);
+            throw new Exception("The link ID is not defined", 112);
         }
         
         //Get all steps of link
-        $stmt = $this->bdd->prepare("SELECT * FROM links_steps WHERE (station_a = :sA1 AND station_b = :sB1) OR (station_a = :sB2 AND station_b = :sA2)"); 
-        $stmt->execute(array(":sA1" => $sA,
-                             ":sA2" => $sB,
-                             ":sB1" => $sB,
-                             ":sB2" => $sB));
+        $stmt = $this->bdd->prepare("SELECT * FROM links_steps WHERE link_id = :linkID"); 
+        $stmt->execute(array(":linkID" => $linkID));
         $steps = $stmt->fetchAll();
         
         return $steps;
