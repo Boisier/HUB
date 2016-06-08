@@ -140,114 +140,162 @@ class printer
         }
     } 
     
-    function station($station, $NETWORK, $LINES)
+    function getLinesLinks($in, $stationID, $NETWORK)
     {
-        $sID = $station['station_id'];
+        $results = [];
 
-        $frontClasses = "";
-        $backClasses = "";
-        $textClasses = "";
-        $textIcons = "";
-        $textDotes = "";
-        $addDotes = false;
-        $isIntersec = false;
-        $isTerminus = false;
-        $display = true;
-        $inCorr = false;
-        $r = "3.5";
-        $rAddon = 0;
-        $x = $station['posx'];
-        $y = $station['posy'];
-        $displayPos = $station['displayPos'];
-        $stationName = $station['name'];
-        $textAlign = "middle";
-        $lineColor = $station['main_hex'];
-        $cuts = $station['cuts'];
-        $terminusHere = [];
-
-        $specs = $this->gqs->getStationSpecs($sID);
-
-        foreach($specs as $spec)
+        foreach($NETWORK["LINKS"] as $link)
         {
-            switch($spec['spec_type'])
+            if($in)
             {
-                case "TERMINUS":
-                    $frontClasses .= " terminus";
-                    $textClasses .= " terminus";
-                    $isTerminus = true;
-                    $addDotes = true;
-                    
-                    array_push($terminusHere, $spec['spec_value']);
-                break;
-                case "MULTIMODAL":
-                    $backClasses .= " multimodal";
-                    $rAddon = 2;
-                break;
-                case "CORR":
-                    $inCorr = true;
-                break;
-                case "PARKING":
-                    $textIcons .= ' <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-PARKING.png"></span>';
-                break;
-                case "ELEVATOR":
-                    $textIcons .= ' <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-ELEVATOR.png"></span><span class="specLine" style="background-color:'.$LINES[$spec['spec_value']]['hex'].'"></span>';
-                break;
-                case "BUSTERMINAL":
-                    $textIcons .= ' <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-BUSTERMINAL.png"></span>';
-                break;
-                case "TRAINSTATION":
-                    $textIcons .= ' <span class="icon"><img src="'.$this->displayPath.'/ICONS/MTL-TRAINSTATION.png"></span>';
-                break;
-            }
-        }
-
-        if(count($station["LINES"]) != 1)
-        {
-            $isIntersec = true;
-            $frontClasses .= " intersec";
-            $textClasses .= " intersec";
-            $addDotes = true;
-        }
-        
-        if($inCorr)
-        {
-            $r = 2.5;
-            
-            if(!$isTerminus)
-            {
-                $display = false;
+                if($link["from"] == $stationID && $link["comment"] == NULL)
+                {
+                    $results[$link["platform_from"]] = $link["line_from"];
+                }
             }
             else
             {
-                $frontClasses = "";
-                $rAddon = 0;
+                if($link["to"] == $stationID && $link["comment"] == NULL)
+                {
+                    $results[$link["platform_to"]] = $link["line_to"];
+                }
             }
-        }
-        else if($isTerminus && !$isIntersec)
-        {
-            $lineColor = "#000";
         }
         
-        if($display)
+        return $results;
+    }
+    
+    function station($station, $NETWORK, $LINES)
+    {
+        $sID = $station['station_id'];
+        
+        //display variables
+            //Bonus classes
+            $frontClasses = "";
+            $backClasses = "";
+            $textClasses = "";
+            //Station attributes
+            $inCorr = false;
+            $isIntersec = false;
+            $displayMainPoint = true;
+            //Design variables
+            $lineColor = $station['main_hex'];
+            $x = $station['posx']; //Position of the main station
+            $y = $station['posy']; //Position of the main station
+            $addDotes = false;
+            $r = "3.5"; //Base radius
+            $rAddon = 0; //Outline width -> 0 : No outline
+            //Station Label
+            $displayPos = $station['displayPos'];
+            $stationName = $station['name'];
+            $cuts = $station['cuts'];
+            $textDotes = "";
+
+        
+        $specs = $this->gqs->getStationSpecs($sID);
+
+        //Is this station a terminus ? 
+        $in = $this->getLinesLinks(true, $sID, $NETWORK);
+        $out = $this->getLinesLinks(false, $sID, $NETWORK);
+        $terminus = [];
+        
+        foreach($in as $key => $a)
         {
-            if($rAddon != 0)
+            if(!in_array($a, $out))
             {
-                echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.($r+$rAddon).'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$backClasses.' stationBtn" />';
+                $terminus[$key] = $a;
+            }
+        }
+        
+        foreach($out as $key => $b)
+        {
+            if(!in_array($b, $in))
+            {
+                $terminus[$key] = $b;
+            }
+        }
+        
+        
+        //Specifications of the station
+//        $specs = $this->gqs->getStationSpecs($sID);
+//
+//        foreach($specs as $spec)
+//        {
+//            switch($spec['spec_type'])
+//            {
+//                case "CORR":
+//                    $inCorr = true;
+//                break;
+//            }
+//        }
+        
+        if(count($station["PLATFORMS"]) != 0)
+        {
+            //Station is a big correspondance point
+            $r = 2.5;
+            
+            //Loop over every plateform of the station
+            foreach($station["PLATFORMS"] as $p)
+            {
+                if(array_key_exists($p["platformID"], $terminus))
+                {
+                    $lineID = $terminus[$p["platformID"]];
+                    $lineColor = $LINES[$lineID]["hex"];
+                    $platformDisplayPos = $p['displayPos'];
+                    
+                    echo '<circle cx="'.$p['posx'].'" cy="'.$p['posy'].'" r="'.$r.'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$frontClasses.' stationBtn" style="fill:'.$lineColor.'"/>';
+                    
+                    $txt = '<span class="lineDot" style="background-color:'.$LINES[$lineID]['hex'].'">
+                        '.$LINES[$lineID]['name'].' 
+                    </span>';
+                    
+                    echo '<foreignObject x="'.($p['posx']-200).'" y="'.($p['posy']-100).'" width="400" height="200">
+                    <div class="stationLabel '.$platformDisplayPos.' '.$textClasses.'"><span class="libelle"><div>'.$txt.'</div></span></div>
+                    </foreignObject>';
+                }
+            }
+        }
+        else
+        {
+            $isTerminus = count($terminus) > 0 ? true : false;
+            //This is a simple station
+            //Is this an intersection ?
+            if(count($station["LINES"]) != 1)
+            {
+                $isIntersec = true;
+                $frontClasses .= " intersec";
+                $textClasses .= " intersec";
+                $addDotes = true;
             }
 
-            echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.$r.'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$frontClasses.' stationBtn" style="fill:'.$lineColor.'"/>';
-        }
-        //Label
-
-        if($isTerminus)
-        {
-            for($i = 0; $i < count($terminusHere); $i++)
+            //Station is a big correspondance point ?
+            if($isTerminus && !$isIntersec)
             {
-                $textDotes .= '<span class="lineDot" style="background-color:'.$LINES[$terminusHere[$i]]['hex'].'">
-                    '.$LINES[$terminusHere[$i]]['name'].' 
-                </span>';
+                $lineColor = "#000";
+            }
+
+            if($displayMainPoint)
+            {
+                if($rAddon != 0)
+                {
+                    echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.($r+$rAddon).'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$backClasses.' stationBtn" />';
+                }
+
+                echo '<circle cx="'.$x.'" cy="'.$y.'" r="'.$r.'px" data-stationID="'.$sID.'" class="station-'.$sID.' station'.$frontClasses.' stationBtn" style="fill:'.$lineColor.'"/>';
+            }
+            
+            if($isTerminus)
+            {
+                foreach($terminus as $lineID)
+                {
+                    $textDotes .= '<span class="lineDot" style="background-color:'.$LINES[$lineID]['hex'].'">
+                        '.$LINES[$lineID]['name'].' 
+                    </span>';
+                }
             }
         }
+        
+        //Statio label
 
         if($cuts[0] != 0)
         {                
@@ -262,7 +310,7 @@ class printer
                 }
                 else
                 {
-                    $txt .= substr($stationName, $cuts[$i]).$textIcons."<br>";;
+                    $txt .= substr($stationName, $cuts[$i])."<br>";
                 }
             }
 
@@ -270,7 +318,7 @@ class printer
         }
         else
         {
-            $txt = $textDotes.'<span class="name">'.$stationName.'</span>'.$textIcons;
+            $txt = $textDotes.'<span class="name">'.$stationName.'</span>';
         }
 
         if($displayPos != "none")
