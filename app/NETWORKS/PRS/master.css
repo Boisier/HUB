@@ -101,6 +101,11 @@ body
     transform: scale(1, 1);
 }
 
+*[data-stationid]
+{
+    cursor: pointer;
+}
+
 .station.terminus
 {
     fill:#000;

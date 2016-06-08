@@ -112,7 +112,8 @@ class printer
                 data-linkid="'.$linkID.'"
                 data-stationa="'.$sA.'"
                 data-stationb="'.$sB.'"
-                class="corr back'.$this->globalClasses.'"/>';  
+                data-stationid="'.$sA.','.$sB.'"
+                class="corr back'.$this->globalClasses.' station-'.$sA.' station-'.$sB.'"/>';  
             
             echo '<line 
                 x1="'.$x1.'" 
@@ -122,7 +123,8 @@ class printer
                 data-linkid="'.$linkID.'"
                 data-stationa="'.$sA.'"
                 data-stationb="'.$sB.'"
-                class="corr front'.$this->globalClasses.'"/>';  
+                data-stationid="'.$sA.','.$sB.'"
+                class="corr front'.$this->globalClasses.' station-'.$sA.' station-'.$sB.'"/>';  
         }
     } 
     
