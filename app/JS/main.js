@@ -1,7 +1,7 @@
 var graph = new Graph();
 
 var currAction = null;
-var currStations = null;
+var currStation = null;
 
 function initMap()
 {  
@@ -38,32 +38,31 @@ function initMap()
     //Listeners
     $("*[data-stationid]").on({click: function() 
         {
-            stationIDs = $(this).data("stationid").toString().split(",");
+            stationID = $(this).data("stationid");
             
-            stationIDs.forEach(function (stationID, index, stationIDs) {
-                if(currAction == null)
+            if(currAction == null)
+            {
+                currAction = "search";
+                $(".selectedPath").removeClass("selectedPath");
+                $("#startStationBlock").html(NETWORK.STATIONS[stationID].name);
+                currStation = stationID;
+            }
+            else if(currAction == "search")
+            {
+                if(stationID != currStation)
                 {
-                    currAction = "search";
-                    $(".selectedPath").removeClass("selectedPath");
-                    $("#startStationBlock").html(NETWORK.STATIONS[stationID].name);
-                    currStations = stationIDs;
+                    route(currStation, stationID, true);
+                    currAction = null;
                 }
-                else if(currAction == "search")
-                {
-                    if(stationIDs != currStations)
-                    {
-                        route(currStations, stationIDs, true);
-                        currAction = null;
-                    }
-                }
-            });
+            }
+            
         }, mouseenter: function () 
         {
-            stationIDs = $(this).data("stationid").toString().split(",");
+            stationID = $(this).data("stationid");
 
             if(currAction == "search")
             {
-                route(currStations, stationIDs, false);
+                route(currStation, stationID, false);
             }
         }
     });
@@ -80,25 +79,19 @@ function compareDistances(a,b) {
 
 var paths;
 
-function route(startStations, endStations, final)
+function route(startStation, endStation, final)
 {
     paths = [];
     
-    startStations.forEach(function(startStation) 
+    for(i in NETWORK.STATIONS[startStation].LINES)
     {
-        endStations.forEach(function(endStation)
+        for(y in NETWORK.STATIONS[endStation].LINES)
         {
-            for(i in NETWORK.STATIONS[startStation].LINES)
-            {
-                for(y in NETWORK.STATIONS[endStation].LINES)
-                {
-                    paths.push(graph.shortestPath(
-                        startStation+"-"+NETWORK.STATIONS[startStation].LINES[i], 
-                        endStation+"-"+NETWORK.STATIONS[endStation].LINES[y]));
-                }
-            }
-        });
-    });
+            paths.push(graph.shortestPath(
+                startStation+"-"+NETWORK.STATIONS[startStation].LINES[i], 
+                endStation+"-"+NETWORK.STATIONS[endStation].LINES[y]));
+        }
+    }
 
     $(".selectedPath").removeClass("selectedPath");
 
