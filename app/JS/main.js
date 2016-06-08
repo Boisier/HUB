@@ -1,7 +1,7 @@
 var graph = new Graph();
 
 var currAction = null;
-var currStation = null;
+var currStations = null;
 
 function initMap()
 {  
@@ -36,33 +36,34 @@ function initMap()
     }
 
     //Listeners
-    $(".stationBtn").on({click: function() 
+    $("*[data-stationid]").on({click: function() 
         {
-            stationID = $(this).data("stationid");
-
-            if(currAction == null)
-            {
-                currAction = "search";
-                $(".selectedPath").removeClass("selectedPath");
-                $("#startStationBlock").html(NETWORK.STATIONS[stationID].name);
-                currStation = stationID;
-            }
-            else if(currAction == "search")
-            {
-                if(stationID != currStation)
+            stationIDs = $(this).data("stationid").toString().split(",");
+            
+            stationIDs.forEach(function (stationID, index, stationIDs) {
+                if(currAction == null)
                 {
-                    route(currStation, stationID, true);
-                    currAction = null;
+                    currAction = "search";
+                    $(".selectedPath").removeClass("selectedPath");
+                    $("#startStationBlock").html(NETWORK.STATIONS[stationID].name);
+                    currStations = stationIDs;
                 }
-            }
-
+                else if(currAction == "search")
+                {
+                    if(stationIDs != currStations)
+                    {
+                        route(currStations, stationIDs, true);
+                        currAction = null;
+                    }
+                }
+            });
         }, mouseenter: function () 
         {
-            stationID = $(this).data("stationid");
+            stationIDs = $(this).data("stationid").toString().split(",");
 
             if(currAction == "search")
             {
-                route(currStation, stationID, false);
+                route(currStations, stationIDs, false);
             }
         }
     });
@@ -79,26 +80,35 @@ function compareDistances(a,b) {
 
 var paths;
 
-function route(startStation, endStation, final)
+function route(startStations, endStations, final)
 {
     paths = [];
-
-    for(i in NETWORK.STATIONS[startStation].LINES)
+    
+    startStations.forEach(function(startStation) 
     {
-        for(y in NETWORK.STATIONS[endStation].LINES)
+        endStations.forEach(function(endStation)
         {
-            paths.push(graph.shortestPath(
-                startStation+"-"+NETWORK.STATIONS[startStation].LINES[i], 
-                endStation+"-"+NETWORK.STATIONS[endStation].LINES[y]));
-        }
-    }
+            for(i in NETWORK.STATIONS[startStation].LINES)
+            {
+                for(y in NETWORK.STATIONS[endStation].LINES)
+                {
+                    paths.push(graph.shortestPath(
+                        startStation+"-"+NETWORK.STATIONS[startStation].LINES[i], 
+                        endStation+"-"+NETWORK.STATIONS[endStation].LINES[y]));
+                }
+            }
+        });
+    });
 
     $(".selectedPath").removeClass("selectedPath");
 
     paths.sort(compareDistances);
 
-    pathStations = paths[0].path.concat(startStation).reverse();
+    pathStations = paths[0].path.reverse();
     pathTime = paths[0].distance;
+    
+    startStation = pathStations[0].toString().split("-")[0];
+    endStation = pathStations[pathStations.length-1].toString().split("-")[0];
 
     $("#startStationBlock").html(NETWORK.STATIONS[startStation].name);
     $("#endStationBlock").html(NETWORK.STATIONS[endStation].name);
@@ -114,8 +124,8 @@ function route(startStation, endStation, final)
         var sIDA = pointA.split("-")[0];
         var sIDB = pointB.split("-")[0];
 
-        $(".line[data-stationa="+sIDA+"][data-stationb="+sIDB+"]").addClass("selectedPath");
-        $(".line[data-stationa="+sIDB+"][data-stationb="+sIDA+"]").addClass("selectedPath");
+        $("*[data-stationa="+sIDA+"][data-stationb="+sIDB+"]").addClass("selectedPath");
+        $("*[data-stationa="+sIDB+"][data-stationb="+sIDA+"]").addClass("selectedPath");
         
         if(i == 0)
         {

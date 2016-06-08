@@ -84,7 +84,7 @@ function Graph(){
       }
     }
     
-    return {distance: distances[path[0]], path: path};
+    return {distance: distances[path[0]], path: path.concat(start)};
   }
 }
 

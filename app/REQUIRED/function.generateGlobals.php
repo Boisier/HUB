@@ -40,7 +40,7 @@ function generateGlobals($netTag)
         $displayPos = $s['display_pos'];
         $cuts = explode(",", $s['display_cut']);
 
-        $NETWORK["STATIONS"][$stationID] = ['station_id' => $stationID, 'name' => $name, 'cuts' => $cuts, 'main_hex' => $main_hex, 'posx' => $posx, 'posy' => $posy, 'displayPos' => $displayPos, "LINES" => []];
+        $NETWORK["STATIONS"][$stationID] = ['station_id' => $stationID, 'name' => $name, 'cuts' => $cuts, 'main_hex' => $main_hex, 'posx' => $posx, 'posy' => $posy, 'displayPos' => $displayPos, "LINES" => [], "PLATEFORMS" => []];
 
         //Fetch neighboors of station
         $neighboors = $gqs->getStationNeighboors($stationID);
@@ -57,6 +57,19 @@ function generateGlobals($netTag)
                 array_push($NETWORK["STATIONS"][$stationID]["LINES"], $n['LB']);
             }
         }
+        
+        //Fetch all platforms of station
+        $platforms = $gqs->getStationPlatforms($stationID);
+        
+        foreach($platforms as $p)
+        {
+            $NETWORK["STATIONS"][$stationID]["PLATFORMS"][$p['platform_id']] = [
+                "platformID" => $p["platform_id"],
+                "type" => $p["platform_type"],
+                "posx" => $p["platform_posx"],
+                "posy" => $p["platform_posy"]
+            ];
+        }
     }
 
     //Fetch all the links of the network
@@ -67,12 +80,15 @@ function generateGlobals($netTag)
         $link = ["linkID" => $l['link_id'],
                  "from" => $l['station_a'],
                  "line_from" => $l['line_a'],
+                 "platform_from" => $l['platform_a'],
                  "to" => $l['station_b'],
                  "line_to" => $l['line_b'],
+                 "platform_to" => $l['platform_b'],
                  "time" => $l['link_value'],
+                 "comment" => $l['link_comment'],
                  "STEPS" => []];
 
-        $steps = $gqs->getLinkSteps($l['station_a'], $l['station_b']);
+        $steps = $gqs->getLinkSteps($l['link_id']);
 
         foreach($steps as $s)
         {
