@@ -95,9 +95,12 @@ The methods available at this time are :
 * **getAllLines()** - Return all the metrolines of the current network
 * **getAllStations()** - Return all the stations of the current network
 * **getStationNeighboors()** - Return all the lines of the neighboors of a station
+* **getStationPlatforms()** - Return all the plateforms of a station
 * **getStationSpecs()** - Return the specs of a station
 * **getLinkSteps()** - Return the drawing steps of a particular link
 * *More to come...*
+
+Full documentation for each function is on its way!
 
 The GQS will throw exception if you try to use one of the network related methods without having set the current network before.
 
@@ -128,18 +131,25 @@ Array []
         station_id - ID of the station
         name - name of the station
         cuts - Line-breaks when displaying the name of the station on the map
-        main_hex - Main color of the station
-        posx - X-position of the station on the map
-        posy - Y-position of the station on the map
-        displayPos - Postion of the station name around the station
+        main_hex - Main color of the station → Color of the default set to the station
+        posx - Main x position of the station on the map
+        posy - Main y position of the station on the map
+        displayPos - Postion indication for the position of the station name around the station
         LINES []
             int - ID of the line desserved by the station
+        PLATFORMS [plateformID] - List of all the platform of the station
+            platformID - ID of the platform
+            type - type of the platform
+            posx - X position of the platform NOT relative to the station
+            posy - Y position of the platform NOT relative to the station
     LINKS [linkID]
         linkID - ID of the link
         from - First station
         line_from - Line of first station
+        platform_from - platform of first station - can be NULL
         to - Second station
         line_to - Line of second station
+        platform_to - platform of first station - can be NULL
         time - travel time on the link
         comment - comment of the link
         STEPS [] - All the steps of the link (used on render)
