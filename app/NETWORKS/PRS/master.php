@@ -28,7 +28,7 @@ class printer
     
     function background()
     {
-       echo '<image x="0" y="0" width="1350" height="1350" xlink:href="'.$this->displayPath.'/background.svg" />';
+       echo '<image x="-10" y="3" width="1350" height="1350" xlink:href="'.$this->displayPath.'/background.svg" />';
     }
     
     function vertice($link, $NETWORK, $LINES)
@@ -58,6 +58,7 @@ class printer
             {
                 array_push($linkPoints, ["x" => $step['posx'], "y" => $step['posy'], "type" => $step['type']]);
             }
+            
             if($link['platform_to'] != NULL)
             {
                 array_push($linkPoints, ["x" => $NETWORK['STATIONS'][$link['to']]["PLATFORMS"][$link['platform_to']]['posx'], "y" => $NETWORK['STATIONS'][$link['to']]["PLATFORMS"][$link['platform_to']]['posy'], "type" => "angle"]);
@@ -69,9 +70,8 @@ class printer
             
             foreach($linkPoints as $key => $points)
             {
-                echo $linkPoints[$key]["type"]."yo";
                 //On vérifie que l'on est pas à la fin du tableau
-                if($key+1 != count($linkPoints) && $linkPoints[$key+1]["type"] != "arcmiddle")
+                if($key+1 != count($linkPoints) && ($linkPoints[$key+1]["type"] != "arc" || $linkPoints[$key]["type"] == "arc"))
                 {
                     $x1 = $linkPoints[$key]["x"];
                     $y1 = $linkPoints[$key]["y"];
@@ -93,15 +93,45 @@ class printer
                             y2="'.$y2.'" 
                             '.$endOfLine;
                     }
-                    else if($linkPoints[$key]["type"] == "arcmiddle")
+                    else if($linkPoints[$key]["type"] == "arc")
                     {
+                        $magnitude = 5;
                         $x0 = $linkPoints[$key-1]["x"];
                         $y0 = $linkPoints[$key-1]["y"];
                         
+                        //Start of arc
+                        $sPoint = $this->getArcPoint($magnitude, $x0, $y0, $x1, $y1); 
+                        
+                        //End of arc
+                        $ePoint = $this->getArcPoint($magnitude, $x2, $y2, $x1, $y1); 
+                        
+                        if($sPoint != [$x0, $y0])
+                        {
+                             echo '<line 
+                            x1="'.$x0.'" 
+                            y1="'.$y0.'" 
+                            x2="'.$sPoint[0].'" 
+                            y2="'.$sPoint[1].'" 
+                            '.$endOfLine;
+                        }
+                        
                         echo '<path 
-                            d="M'.$x0.' '.$y0.' Q '.$x1.' '.$y1.' '.$x2.' '.$y2.'" 
+                            d="M'.$sPoint[0].' '.$sPoint[1].' Q '.$x1.' '.$y1.' '.$ePoint[0].' '.$ePoint[1].'" 
                             fill="none"
                             '.$endOfLine;
+                        
+                        if($ePoint != [$x2, $y2] && $key+1 != count($linkPoints) && $linkPoints[$key+1]["type"] != "arc")
+                        {
+                             echo '<line 
+                            x1="'.$ePoint[0].'" 
+                            y1="'.$ePoint[1].'" 
+                            x2="'.$x2.'" 
+                            y2="'.$y2.'" 
+                            '.$endOfLine;
+                        }
+                            
+                        $linkPoints[$key]["x"] = $ePoint[0];
+                        $linkPoints[$key]["y"] = $ePoint[1];
                     }
                 }
             }
@@ -139,6 +169,30 @@ class printer
                 class="corr front'.$this->globalClasses.' station-'.$sID.'"/>';  
         }
     } 
+    
+    function getArcPoint($magnitude, $x0, $y0, $x1, $y1)
+    {
+        $vAx = $x0 - $x1;
+        $vAy = $y0 - $y1;
+        
+        $uA = sqrt(pow($vAx, 2) + pow($vAy, 2));
+        
+        if($uA > $magnitude)
+        {
+            $angA = atan2($vAy, $vAx);
+            $vAx = $magnitude * cos($angA);
+            $vAy = $magnitude * sin($angA);
+            $x = $x1 + $vAx;
+            $y = $y1 + $vAy;
+        }
+        else
+        {
+            $x = $x0;
+            $y = $y0;
+        }
+        
+        return [$x, $y];
+    }
     
     function getLinesLinks($in, $stationID, $NETWORK)
     {
@@ -260,7 +314,7 @@ class printer
             $isTerminus = count($terminus) > 0 ? true : false;
             //This is a simple station
             //Is this an intersection ?
-            if(count($station["LINES"]) != 1)
+            if(count($station["LINES"]) > 1)
             {
                 $isIntersec = true;
                 $frontClasses .= " intersec";
