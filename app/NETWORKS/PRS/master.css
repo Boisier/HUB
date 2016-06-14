@@ -82,6 +82,11 @@ body
     stroke: #000;
 }
 
+.corr.front.stationBtn:hover
+{
+    stroke: #000;
+}
+
 
 
 
@@ -128,8 +133,9 @@ body
     fill:#000!important;
 }
 
-.stationBtn:hover
+.station.stationBtn:hover
 {
+    fill:#000!important;
     stroke-width:3;
     
     -webkit-transform: scale(1.5, 1.5);

@@ -162,7 +162,7 @@ class printer
                 y2="'.$y2.'" 
                 data-linkid="'.$linkID.'"
                 data-stationid="'.$sID.'"
-                class="corr front'.$this->globalClasses.' station-'.$sID.'"/>';  
+                class="corr front'.$this->globalClasses.' station-'.$sID.' stationBtn"/>';  
         }
     } 
     
@@ -198,14 +198,14 @@ class printer
         {
             if($in)
             {
-                if($link["from"] == $stationID && $link["comment"] == NULL)
+                if($link["from"] == $stationID/* && $link["comment"] == NULL*/)
                 {
                     $results[$link["platform_from"]] = $link["line_from"];
                 }
             }
             else
             {
-                if($link["to"] == $stationID && $link["comment"] == NULL)
+                if($link["to"] == $stationID/* && $link["comment"] == NULL*/)
                 {
                     $results[$link["platform_to"]] = $link["line_to"];
                 }
