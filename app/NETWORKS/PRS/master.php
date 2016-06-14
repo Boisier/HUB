@@ -196,18 +196,30 @@ class printer
 
         foreach($NETWORK["LINKS"] as $link)
         {
-            if($in)
+            /*if($in)
             {
-                if($link["from"] == $stationID/* && $link["comment"] == NULL*/)
+                if($link["from"] == $stationID)
                 {
                     $results[$link["platform_from"]] = $link["line_from"];
                 }
             }
             else
             {
-                if($link["to"] == $stationID/* && $link["comment"] == NULL*/)
+                if($link["to"] == $stationID)
                 {
                     $results[$link["platform_to"]] = $link["line_to"];
+                }
+            }*/
+            
+            if(($link["from"] == $stationID || $link["to"] == $stationID) && $link["from"] != $link["to"])
+            {
+                if($link["from"] == $stationID)
+                {
+                    array_push($results, $link['line_from'].'-'.$link["platform_from"]);
+                }
+                else
+                {
+                    array_push($results, $link['line_to'].'-'.$link["platform_to"]);
                 }
             }
         }
@@ -247,37 +259,38 @@ class printer
         //Is this station a terminus ? 
         $in = $this->getLinesLinks(true, $sID, $NETWORK);
         $out = $this->getLinesLinks(false, $sID, $NETWORK);
+        
+        $terminusTemp = array_count_values($in);
         $terminus = [];
         
-        foreach($in as $key => $a)
+        foreach($terminusTemp as $key => $occur)
         {
-            if(!in_array($a, $out))
+            if($occur == 1)
             {
-                $terminus[$key] = $a;
+                $lineID = explode('-', $key)[0];
+                $platformID = explode('-', $key)[1];
+                
+                $terminus[$platformID] = $lineID;
             }
         }
         
-        foreach($out as $key => $b)
+        if($sID == 79)
         {
-            if(!in_array($b, $in))
-            {
-                $terminus[$key] = $b;
-            }
+            echo '<script>console.log(`'.print_r($in).'-'.print_r($terminus).'`)</script>';
         }
-        
         
         //Specifications of the station
-//        $specs = $this->gqs->getStationSpecs($sID);
-//
-//        foreach($specs as $spec)
-//        {
-//            switch($spec['spec_type'])
-//            {
-//                case "CORR":
-//                    $inCorr = true;
-//                break;
-//            }
-//        }
+        /*$specs = $this->gqs->getStationSpecs($sID);
+
+        foreach($specs as $spec)
+        {
+            switch($spec['spec_type'])
+            {
+                case "CORR":
+                    $inCorr = true;
+                break;
+            }
+        }*/
         
         if(count($station["PLATFORMS"]) != 0)
         {
