@@ -152,8 +152,6 @@ class printer
                 x2="'.$x2.'" 
                 y2="'.$y2.'" 
                 data-linkid="'.$linkID.'"
-                data-stationa="'.$sID.'"
-                data-stationb="'.$sID.'"
                 data-stationid="'.$sID.'"
                 class="corr back'.$this->globalClasses.' station-'.$sID.'"/>';  
             
@@ -163,8 +161,6 @@ class printer
                 x2="'.$x2.'" 
                 y2="'.$y2.'" 
                 data-linkid="'.$linkID.'"
-                data-stationa="'.$sID.'"
-                data-stationb="'.$sID.'"
                 data-stationid="'.$sID.'"
                 class="corr front'.$this->globalClasses.' station-'.$sID.'"/>';  
         }

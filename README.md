@@ -67,11 +67,21 @@ class Printer
     {
         //print station icon
     }
+    
+    function detailsLink($linkID, $startX, $endX, $NETWORK, $LINES)
+    {
+        //print station icon
+    }
+    
+    function detailsStation($stationID, $posX, $extrem, $NETWORK, $LINES)
+    {
+        //print station icon
+    }
 }
 
 ```
 
-This can call other php files if needed. Just make sure that all the files are in the same network folder.
+This can call other php files of methods if needed. Just make sure that all the files are in the same network folder.
 
 ### master.css
 
@@ -171,16 +181,13 @@ The current system gives you a lot of freedom when drawing the map. In couterpar
 
 ### Links
 
-All the drawn links must have three specific `data-` attributes:
-* `data-linkid` : The ID of the link (*linkID*)
-* `data-stationa` : the first station of the link (*from*)
-* `data-stationb` : the second station of the link (*to*)
-
-If your link is made of multiple SVG elements, just assign them all the three `data-` attributes.
+All the drawn links must have one specific `data-` attribute: `data-linkid` : The ID of the link (*linkID*). It is used by HUB to highlight the current route.
+If your link is made of multiple SVG elements, just assign them all the `data-` attribute, the selector used by HUB is exhaustive.
 
 **Reserved CSS class** : The CSS class **selectedPath** is used by HUB to highlight the route found. You can't use selectedPath as one of your own CSS classes, but you can style it in your *master.css*.
 
-If you want to print SVG elements related to the links, but who don't need to use **selectedPath** class, just ommit the data- attributes, without them, HUB will just ignore the elements.
+If you want to print SVG elements related to the links, but who don't need to use **selectedPath** class, just ommit the data- attribute, without them, HUB will just ignore the elements. 
+Feel free to stylize the **.selectedPath** in your CSS.
 
 ### Stations
 
@@ -188,12 +195,11 @@ All the printed stations must have one specific `data-` attribute to be recogniz
 * `data-stationid` : The ID of the station (*station_id*)
 
 If your station is made of multiple SVG elements, just assign them all the `data-stationid` attribute.
-The elements who form the clickable part of the station icon must have the class **.stationBtn**. HUB use it to assign the eventListeners.
+The elements who form the clickable part of the station icon must all have the `data-stationid` attribute, HUB use it to assign the eventListeners.
 
-**Reserved CSS class** : The CSS class **selectedPath** is used by HUB to highlight the route found. You can't use selectedPath as one of your own CSS classes, but you can style it in your *master.css*.
-
-If you want to print SVG elements related to the links, but who don't need to use **selectedPath** class, just ommit the data- attributes, without them, HUB will just ignore the elements.
+**Reserved CSS class** : The CSS class **.selectedPath** is used by HUB to highlight the route found. You can't use selectedPath as one of your own CSS classes, but you can style it in your *master.css*.
+Feel free to stylize the **.selectedPath** in your CSS.
 
 ## Interactions
 
-You don't need to assign `onclick` attributes to your SVG elements. HUB will link the eventListeners itself. Just be sure to use the specified `data-` attributes and CSS classes.
+You don't need to assign `onclick` attributes to your SVG elements. HUB will link the eventListeners itself. Just be sure to use the specified `data-` attributes.
