@@ -3,14 +3,15 @@ var graph = new Graph();
 var currAction = null;
 var currStation = null;
 
+var vertex = [];
+
 function initMap()
 {  
-    //Initialisation des vertexes
-
-    var vertex = [];
+    //Génération des vertexes
 
     for(i in NETWORK.LINKS)
     {
+        linkID = NETWORK.LINKS[i].from+"-"+NETWORK.LINKS[i].line_from;
         stationA = NETWORK.LINKS[i].from+"-"+NETWORK.LINKS[i].line_from;
         stationB = NETWORK.LINKS[i].to+"-"+NETWORK.LINKS[i].line_to;
         time = Number(NETWORK.LINKS[i].time);
@@ -107,18 +108,30 @@ function route(startStation, endStation, final)
     $("#endStationBlock").html(NETWORK.STATIONS[endStation].name);
     $("#timeEstimated").html(pathTime);
 
-        //$("#routeInfos").html("<p>Temps de trajet esimé : "+pathTime+" minutes</p>");
-
+    //$("#routeInfos").html("<p>Temps de trajet esimé : "+pathTime+" minutes</p>");
+    
     for(var i = 0; i+1 < pathStations.length; i++)
-    {
+    {        
         var pointA = pathStations[i].toString();
         var pointB = pathStations[i+1].toString();
 
         var sIDA = pointA.split("-")[0];
+        var lIDA = pointA.split("-")[1];
+        
         var sIDB = pointB.split("-")[0];
+        var lIDB = pointB.split("-")[1];
 
-        $("*[data-stationa="+sIDA+"][data-stationb="+sIDB+"]").addClass("selectedPath");
-        $("*[data-stationa="+sIDB+"][data-stationb="+sIDA+"]").addClass("selectedPath");
+        var linkID = "";
+        
+        for(y in NETWORK.LINKS)
+        {        
+            v = NETWORK.LINKS[y];
+            
+            if((v.from == sIDA && v.line_from == lIDA && v.to == sIDB && v.line_to == lIDB) || (v.from == sIDB && v.line_from == lIDB && v.to == sIDA && v.line_to == lIDA))
+                linkID = v.linkID;
+        }
+        
+        $("*[data-linkid="+linkID+"]").addClass("selectedPath");
         
         if(i == 0)
         {
