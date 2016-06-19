@@ -67,11 +67,21 @@ class Printer
     {
         //print station icon
     }
+    
+    function detailsLink($linkID, $startX, $endX, $NETWORK, $LINES)
+    {
+        //print station icon
+    }
+    
+    function detailsStation($stationID, $posX, $extrem, $NETWORK, $LINES)
+    {
+        //print station icon
+    }
 }
 
 ```
 
-This can call other php files if needed. Just make sure that all the files are in the same network folder.
+This can call other php files of methods if needed. Just make sure that all the files are in the same network folder.
 
 ### master.css
 
@@ -95,9 +105,12 @@ The methods available at this time are :
 * **getAllLines()** - Return all the metrolines of the current network
 * **getAllStations()** - Return all the stations of the current network
 * **getStationNeighboors()** - Return all the lines of the neighboors of a station
+* **getStationPlatforms()** - Return all the plateforms of a station
 * **getStationSpecs()** - Return the specs of a station
 * **getLinkSteps()** - Return the drawing steps of a particular link
 * *More to come...*
+
+Full documentation for each function is on its way!
 
 The GQS will throw exception if you try to use one of the network related methods without having set the current network before.
 
@@ -128,19 +141,28 @@ Array []
         station_id - ID of the station
         name - name of the station
         cuts - Line-breaks when displaying the name of the station on the map
-        main_hex - Main color of the station
-        posx - X-position of the station on the map
-        posy - Y-position of the station on the map
-        displayPos - Postion of the station name around the station
+        main_hex - Main color of the station → Color of the default set to the station
+        posx - Main x position of the station on the map
+        posy - Main y position of the station on the map
+        displayPos - Postion indication for the position of the station name around the station
         LINES []
             int - ID of the line desserved by the station
+        PLATFORMS [plateformID] - List of all the platform of the station
+            platformID - ID of the platform
+            type - type of the platform
+            posx - X position of the platform NOT relative to the station
+            posy - Y position of the platform NOT relative to the station
+            displayPox - Indication for the position of labels related to this platform
     LINKS [linkID]
         linkID - ID of the link
         from - First station
         line_from - Line of first station
+        platform_from - platform of first station - can be NULL
         to - Second station
         line_to - Line of second station
+        platform_to - platform of first station - can be NULL
         time - travel time on the link
+        comment - comment of the link
         STEPS [] - All the steps of the link (used on render)
             type - Type of step (Sharp/Round/...)
             posx - Step point X position
@@ -159,16 +181,13 @@ The current system gives you a lot of freedom when drawing the map. In couterpar
 
 ### Links
 
-All the drawn links must have three specific `data-` attributes:
-* `data-linkid` : The ID of the link (*linkID*)
-* `data-stationa` : the first station of the link (*from*)
-* `data-stationb` : the second station of the link (*to*)
+All the drawn links must have one specific `data-` attribute: `data-linkid` : The ID of the link (*linkID*). It is used by HUB to highlight the current route.
+If your link is made of multiple SVG elements, just assign them all the `data-` attribute, the selector used by HUB is exhaustive.
 
-If your link is made of multiple SVG elements, just assign them all the three `data-` attributes.
+**Reserved CSS class** : The CSS class **selectedPath** is used by HUB to highlight the route found. You can't use selectedPath as one of your own CSS classes, but you can style it in your *master.css*.
 
-**Reserved CSS class** : The CSS class **selectedPath** is used by HUB to highlight the rout found. You can't use selectedPath as one of your own CSS classes, but you can style it in your *master.css*.
-
-If you want to print SVG elements related to the links, but who don't need to use **selectedPath** class, just ommit the data- attributes, without them, HUB will just ignore the elements.
+If you want to print SVG elements related to the links, but who don't need to use **selectedPath** class, just ommit the data- attribute, without them, HUB will just ignore the elements. 
+Feel free to stylize the **.selectedPath** in your CSS.
 
 ### Stations
 
@@ -176,10 +195,11 @@ All the printed stations must have one specific `data-` attribute to be recogniz
 * `data-stationid` : The ID of the station (*station_id*)
 
 If your station is made of multiple SVG elements, just assign them all the `data-stationid` attribute.
-The elements who form the clickable part of the station icon must have the class **.stationBtn**. HUB use it to assign the eventListeners.
+The elements who form the clickable part of the station icon must all have the `data-stationid` attribute, HUB use it to assign the eventListeners.
 
-If you want to print SVG elements related to the links, but who don't need to use **selectedPath** class, just ommit the data- attributes, without them, HUB will just ignore the elements.
+**Reserved CSS class** : The CSS class **.selectedPath** is used by HUB to highlight the route found. You can't use selectedPath as one of your own CSS classes, but you can style it in your *master.css*.
+Feel free to stylize the **.selectedPath** in your CSS.
 
 ## Interactions
 
-You don't need to assign `onclick` attributes to your SVG elements. HUB will link the eventListeners itself. Just be sure to use the specified `data-` attributes and CSS classes.
+You don't need to assign `onclick` attributes to your SVG elements. HUB will link the eventListeners itself. Just be sure to use the specified `data-` attributes.

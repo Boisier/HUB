@@ -270,7 +270,7 @@ class printer
             y1="'.$posY.'" 
             x2="'.$endX.'%" 
             y2="'.$posY.'"
-            class="line selectedPath" 
+            class="line selectedRoute" 
             style="stroke:'.$color.'" />';       
 
         if($printTime)
