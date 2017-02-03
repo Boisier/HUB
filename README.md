@@ -1,8 +1,8 @@
 # HUB
 HUB is a transportation system viewer based on SVG (to display the map), PHP, and JavaScript.
-It used an SQL database to store informations about the networks, the stations, and the lines.
+It used a SQL database to store informations about the networks, the stations, and the lines.
 
-HUB use Djikstra's algorithm to calculate the fastest route between two stations.
+HUB use Djikstra's algorithm to determine the fastest route between two stations.
 
 HUB is made to be able to support different networks. *In Progress*
 
@@ -20,7 +20,7 @@ Those three files *WILL* be called by HUB.
 
 ### master.php
 
-This file all the functions called by the main script.
+This file contain all the functions called by the main script.
 It must be in its own namespace following a specific syntax : _Networks\\**network_tag**_, otherwise you'll get an error.
 
 The **master.php** file must also contain a **Printer** class implementing different methods who will be called by the main process.
