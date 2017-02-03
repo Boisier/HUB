@@ -53,6 +53,11 @@ body
     stroke-linecap: round;
 }
 
+.line.RER
+{
+    stroke-width: 6;
+}
+
 .line.selected,
 .line.selectedPath,
 .line.selectedRoute
