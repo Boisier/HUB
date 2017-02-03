@@ -41,6 +41,7 @@ class printer
             $sB = $link['to'];
 
             $color = $LINES[$link['line_from']]['hex'];
+            $lineType = $LINES[$link['line_from']]['type'];
 
             $linkPoints = [];
 
@@ -81,7 +82,7 @@ class printer
                     $endOfLine = 'data-linkid="'.$linkID.'"
                                   data-stationa="'.$sA.'"
                                   data-stationb="'.$sB.'"
-                                  class="line '.$this->globalClasses.'" 
+                                  class="line '.$this->globalClasses.' '.$lineType.'" 
                                   style="stroke:'.$color.'" />';
                     
                     if($linkPoints[$key]["type"] == "angle")
